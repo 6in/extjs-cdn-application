@@ -26,6 +26,22 @@
 		src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/packages/ux/classic/ux.js"></script>
 
 	<link href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" rel="stylesheet">
+
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+	<script type="text/javascript">
+		const baseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs';
+		require.config({
+			paths: {
+				vs: baseUrl
+			},
+			'vs/nls': {
+				availableLanguages: {
+					"*": "ja"
+				}
+			}
+		});
+	</script>
 	<script type="text/javascript" src="./app.js"></script>
 </head>
 
