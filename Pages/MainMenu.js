@@ -31,23 +31,9 @@ Ext.define('Page.MainMenuController', {
     alias: 'controller.MainMenu',
     init() {
         const me = this
-        me.callParent(arguments)
+        me.callParent(arguments);
 
-        me.get('./Pages/resources/menu.yml').then(({ response, opts }) => {
-            const menuData = YAML.parse(response.responseText);
-            const menu = me.getViewModel().getStore('menu')
-            const newMenu = Ext.create('Ext.data.TreeStore', {
-                fields: [
-                    { name: 'name', type: 'string' },
-                    { name: 'page', type: 'string' },
-                    { name: 'description', type: 'string' },
-                ],
-                root: menuData.root
-            });
-            menu.removeAll();
-            menu.setRootNode(newMenu.getRootNode());
-        })
-
+        me.onReloadMenu();
     },
     onMenuSelect(obj, menu) {
         if (!menu.isLeaf()) {
@@ -73,6 +59,23 @@ Ext.define('Page.MainMenuController', {
         } else {
             tabPanel.setActiveTab(existsPanel[0]);
         }
+    },
+    onReloadMenu() {
+        const me = this
+        me.get('./Pages/resources/menu.yml').then(({ response, opts }) => {
+            const menuData = YAML.parse(response.responseText);
+            const menu = me.getViewModel().getStore('menu')
+            const newMenu = Ext.create('Ext.data.TreeStore', {
+                fields: [
+                    { name: 'name', type: 'string' },
+                    { name: 'page', type: 'string' },
+                    { name: 'description', type: 'string' },
+                ],
+                root: menuData.root
+            });
+            menu.removeAll();
+            menu.setRootNode(newMenu.getRootNode());
+        })
     }
 });
 
@@ -84,6 +87,13 @@ Ext.define('Pages.MainMenu', {
     viewModel: 'MainMenu',
 
     layout: 'fit',
+
+    tbar: [{
+        text: 'reload',
+        iconCls: 'fa fa-sync-alt',
+        handler: 'onReloadMenu'
+    }],
+
     items: {
         xtype: 'treepanel',
         bind: '{menu}',
