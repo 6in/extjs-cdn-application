@@ -43,10 +43,8 @@ Ext.define('Pages.MainMenuViewModel', {
                             description: 'Monacoエディタサンプル',
                             leaf: true
                         }
-
                     ]
-                }
-                ]
+                }]
             }
         }
     }
@@ -58,8 +56,6 @@ Ext.define('Page.MainMenuController', {
     init() {
         const me = this
         me.callParent(arguments);
-
-        // me.onReloadMenu();
     },
     onMenuSelect(obj, menu) {
         if (!menu.isLeaf()) {
@@ -88,20 +84,33 @@ Ext.define('Page.MainMenuController', {
     },
     onReloadMenu() {
         const me = this
+        const menu = me.getViewModel().getStore('menu')
         me.get('./Pages/resources/menu.yml').then(({ response, opts }) => {
             debugger
             const menuData = YAML.parse(response.responseText);
-            const menu = me.getViewModel().getStore('menu')
             const newMenu = Ext.create('Ext.data.TreeStore', {
                 fields: [
                     { name: 'name', type: 'string' },
                     { name: 'page', type: 'string' },
                     { name: 'description', type: 'string' },
                 ],
-                root: menuData.root
+                root: {
+                    name: 'root',
+                    children: [{
+                        name: 'hello',
+                        description: 'hello2',
+                        expanded: true,
+                        children: [
+                            { name: 'item1', description: 'comment1', leaf: true },
+                            { name: 'item2', description: 'comment2', leaf: true },
+                        ]
+                    }]
+                },
+                root2: menuData.root
             });
-            menu.removeAll();
-            menu.setRootNode(newMenu.getRootNode());
+            menu.getRoot().removeAll();
+            menu.setRoot(menuData.root);
+            me.getView().refresh();
         })
     }
 });
@@ -114,12 +123,6 @@ Ext.define('Pages.MainMenu', {
     viewModel: 'MainMenu',
 
     layout: 'fit',
-
-    tbar: [{
-        text: 'reload',
-        iconCls: 'fa fa-sync-alt',
-        handler: 'onReloadMenu'
-    }],
 
     items: {
         xtype: 'treepanel',
