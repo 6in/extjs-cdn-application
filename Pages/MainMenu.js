@@ -63,6 +63,7 @@ Ext.define('Page.MainMenuController', {
     onReloadMenu() {
         const me = this
         me.get('./Pages/resources/menu.yml').then(({ response, opts }) => {
+            debugger
             const menuData = YAML.parse(response.responseText);
             const menu = me.getViewModel().getStore('menu')
             const newMenu = Ext.create('Ext.data.TreeStore', {
