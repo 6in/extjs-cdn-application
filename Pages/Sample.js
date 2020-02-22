@@ -2,21 +2,37 @@ Ext.define('Pages.SampleViewModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.Sample',
     data: {
-        text: 'sample'
+        text: 'sample',
+        original: 'This line is removed on the right.\njust some text\nabcd\nefgh\nSome more text',
+        modified: 'just some text\nabcz\nzzzzefgh\nSome more text.\nThis line is removed on the left.'
+    },
+    stores: {
+        sampleStore: {
+            fields: [
+                { name: 'name', type: 'string' },
+                { name: 'age', type: 'int' }
+            ],
+            data: [
+                { name: 'HTML', age: 29 },
+                { name: 'javascript', age: 23 },
+                { name: 'C', age: 46 }
+            ]
+        }
     }
 });
 
 Ext.define('Page.SampleController', {
-    extend: 'Ext.app.ViewController',
+    extend: 'Pages.BaseController',
     alias: 'controller.Sample',
     init() {
         const me = this
         me.callParent(arguments)
-        console.log("hello");
     },
     onClickOk() {
         const me = this
-        console.log(me.getViewModel().getData().text)
+        const text = me.getViewModel().getData().text;
+        const diff = me.lookupReference('diff')
+        diff.setOriginal(text);
     }
 });
 
@@ -28,18 +44,49 @@ Ext.define('Pages.Sample', {
 
     title: 'Sample-Panel',
     alias: 'widget.sample',
-
     iconCls: 'fa fa-cat',
 
-    layout: 'fit',
-    tbar: [{
-        text: 'ok',
-        handler: 'onClickOk'
-    }],
-    items: {
-        xtype: 'monaco',
+    layout: 'border',
+
+    items: [{
+        region: 'north',
+        split: true,
+        height: 300,
+        layout: 'fit',
+        items: {
+            xtype: 'monaco',
+            options: {
+                language: 'javascript',
+                minimap: {
+                    enabled: true
+                }
+            },
+            bind: {
+                value: '{text}',
+            },
+        },
+        buttons: [{
+            text: 'OK',
+            handler: 'onClickOk'
+        }]
+    }, {
+        region: 'center',
+        reference: 'diff',
+        xtype: 'monacodiff',
         bind: {
-            value: '{text}'
+            original: '{original}',
+            modified: '{modified}'
         }
-    },
+    }, {
+        region: 'south',
+        split: true,
+        height: 300,
+        layout: 'fit',
+        xtype: 'grid',
+        bind: '{sampleStore}',
+        columns: [
+            { header: 'name', dataIndex: 'name' },
+            { header: 'age', dataIndex: 'age' }
+        ]
+    }]
 });

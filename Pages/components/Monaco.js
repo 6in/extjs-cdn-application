@@ -2,7 +2,13 @@ Ext.define('Pages.components.Monaco', {
     extend: 'Ext.Component',
     alias: 'widget.monaco',
     config: {
-        value: 'title here'
+        value: '',
+        theme: 'vs-dark',
+        tabSize: 2,
+        fontSize: 14,
+        automaticLayout: true,
+        language: '',
+        options: {}
     },
     twoWayBindable: [
         'value'
@@ -10,11 +16,9 @@ Ext.define('Pages.components.Monaco', {
     renderTpl: '<div id="{id}_monaco" style="width:100%;height:100%"></div>',
     constructor(config) {
         this.callParent([config])
-        console.log("constructor")
         return
     },
     initComponent() {
-        console.log("initComponent")
     },
     getValue() {
         if (this.editor) {
@@ -35,15 +39,17 @@ Ext.define('Pages.components.Monaco', {
             const me = this
             const id = `${me.getId()}_monaco`
             me.targetDiv = document.getElementById(id)
-            const options = {
-                automaticLayout: true,
-                fontSize: 14,
-                tabSize: 2,
-                theme: 'vs-dark',
-                minimap: {
-                    enabled: true
-                }
-            }
+            const options = Object.assign(
+                {
+                    value: me.getValue(),
+                    automaticLayout: me.getAutomaticLayout(),
+                    fontSize: me.getFontSize(),
+                    tabSize: me.getTabSize(),
+                    theme: me.getTheme(),
+                    language: me.getLanguage()
+                },
+                me.getOptions())
+
             me.editor = monaco.editor.create(me.targetDiv, options);
             me.editor.onDidChangeModelContent(event => {
                 const value = me.editor.getValue();
@@ -57,5 +63,12 @@ Ext.define('Pages.components.Monaco', {
                 me.editor.layout();
             }
         }
+    },
+    monaco() {
+        const me = this;
+        if (me.editor) {
+            return me.editor
+        }
+        return null;
     }
 });
