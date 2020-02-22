@@ -22,6 +22,32 @@ Ext.define('Pages.MainMenuViewModel', {
                 { name: 'page', type: 'string' },
                 { name: 'description', type: 'string' },
             ],
+            root: {
+                text: 'root',
+                expanded: true,
+                children: [{
+                    name: 'ツール',
+                    expanded: true,
+                    children: [
+                        {
+                            text: 'Template',
+                            name: 'Template',
+                            page: 'Pages.Template',
+                            description: 'ページテンプレート',
+                            leaf: true
+                        },
+                        {
+                            text: 'Sample',
+                            name: 'Sample',
+                            page: 'Pages.Sample',
+                            description: 'Monacoエディタサンプル',
+                            leaf: true
+                        }
+
+                    ]
+                }
+                ]
+            }
         }
     }
 });
@@ -33,7 +59,7 @@ Ext.define('Page.MainMenuController', {
         const me = this
         me.callParent(arguments);
 
-        me.onReloadMenu();
+        // me.onReloadMenu();
     },
     onMenuSelect(obj, menu) {
         if (!menu.isLeaf()) {
