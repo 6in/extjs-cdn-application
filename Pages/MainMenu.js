@@ -1,5 +1,6 @@
 Ext.define('TreeDataModel', {
     extend: 'Ext.data.Model',
+    alias: 'model.treedata',
     fields: [
         { name: 'name', type: 'string' },
         { name: 'page', type: 'string' },
@@ -16,7 +17,11 @@ Ext.define('Pages.MainMenuViewModel', {
     stores: {
         menu: {
             type: 'tree',
-            model: 'TreeDataModel',
+            fields: [
+                { name: 'name', type: 'string' },
+                { name: 'page', type: 'string' },
+                { name: 'description', type: 'string' },
+            ],
         }
     }
 });
@@ -32,7 +37,11 @@ Ext.define('Page.MainMenuController', {
             const menuData = YAML.parse(response.responseText);
             const menu = me.getViewModel().getStore('menu')
             const newMenu = Ext.create('Ext.data.TreeStore', {
-                model: 'TreeDataModel',
+                fields: [
+                    { name: 'name', type: 'string' },
+                    { name: 'page', type: 'string' },
+                    { name: 'description', type: 'string' },
+                ],
                 root: menuData.root
             });
             menu.removeAll();
