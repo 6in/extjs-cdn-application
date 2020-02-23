@@ -1,6 +1,6 @@
-Ext.define('Pages.SampleViewModel', {
+Ext.define('Pages.MonacoSampleViewModel', {
     extend: 'Ext.app.ViewModel',
-    alias: 'viewmodel.Sample',
+    alias: 'viewmodel.MonacoSample',
     data: {
         text: 'sample',
         original: 'This line is removed on the right.\njust some text\nabcd\nefgh\nSome more text',
@@ -21,9 +21,9 @@ Ext.define('Pages.SampleViewModel', {
     }
 });
 
-Ext.define('Page.SampleController', {
+Ext.define('Page.MonacoSampleController', {
     extend: 'Pages.BaseController',
-    alias: 'controller.Sample',
+    alias: 'controller.MonacoSample',
     init() {
         const me = this
         me.callParent(arguments)
@@ -36,15 +36,13 @@ Ext.define('Page.SampleController', {
     }
 });
 
-Ext.define('Pages.Sample', {
+Ext.define('Pages.MonacoSample', {
     extend: 'Ext.panel.Panel',
 
-    controller: 'Sample',
-    viewModel: 'Sample',
+    controller: 'MonacoSample',
+    viewModel: 'MonacoSample',
 
-    title: 'Sample-Panel',
-    alias: 'widget.sample',
-    iconCls: 'fa fa-cat',
+    title: 'Monaco-Panel',
 
     layout: 'border',
 
@@ -72,21 +70,36 @@ Ext.define('Pages.Sample', {
     }, {
         region: 'center',
         reference: 'diff',
-        xtype: 'monacodiff',
-        bind: {
-            original: '{original}',
-            modified: '{modified}'
+        title: 'diff sample',
+        layout: 'fit',
+        items: {
+            xtype: 'monacodiff',
+            bind: {
+                original: '{original}',
+                modified: '{modified}'
+            }
         }
     }, {
         region: 'south',
+        title: 'grid sample',
         split: true,
         height: 300,
         layout: 'fit',
         xtype: 'grid',
-        bind: '{sampleStore}',
+        plugins: [
+            { ptype: 'cellediting', clicksToEdit: 1 },
+            { ptype: 'clipboard' }
+        ],
+        columnLines: true,
+        selModel: {
+            type: 'spreadsheet',
+            columnSelect: true
+        },
         columns: [
+            { xtype: 'rownumberer', width: 60, header: 'No.' },
             { header: 'name', dataIndex: 'name' },
             { header: 'age', dataIndex: 'age' }
-        ]
+        ],
+        bind: '{sampleStore}',
     }]
 });

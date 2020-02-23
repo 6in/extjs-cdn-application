@@ -19,8 +19,10 @@ Ext.application({
                 'Pages.MainMenu',
                 'Pages.components.TemplateComponent',
                 'Pages.components.Monaco',
-                'Pages.components.MonacoDiff']
-
+                'Pages.components.MonacoDiff',
+                'Pages.components.Iframe',
+                'Pages.components.HandsonTable',
+            ]
             // ページをロードする
             Ext.require(pages, this.createViewPort);
         })

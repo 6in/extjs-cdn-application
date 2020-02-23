@@ -1,12 +1,10 @@
-Ext.define('Pages.components.TemplateComponent', {
+Ext.define('Pages.components.Iframe', {
     extend: 'Ext.Component',
-    alias: 'widget.template-component',
+    alias: 'widget.iframe',
     config: {
-        value: 'value'
+        src: '',
+        target: ''
     },
-    twoWayBindable: [
-        'value'
-    ],
     constructor(config) {
         this.callParent([config])
         return
@@ -20,7 +18,7 @@ Ext.define('Pages.components.TemplateComponent', {
         return this.callParent(arguments)
     },
     // コンポーネントの表示領域
-    renderTpl: '<div id="{id}_component" style="width: 100%; height: 100%">This is a template component.</div>',
+    renderTpl: '<iframe id="{id}_component" src="{src}" target="{target}" width="100%" height="100%"></iframe>',
 
     listeners: {
         /**
@@ -31,12 +29,23 @@ Ext.define('Pages.components.TemplateComponent', {
             const me = this;
             // 表示領域を取得する
             const id = `${this.getId()}_component`;
-            me.elm = document.getElementById(id);
+            const elm = document.getElementById(id);
+            me.iframe = elm;
+            // me.iframe.src = me.config.src;
         }
     },
-    applyValue(value) {
-        const me = this
-        if (me.elm) {
+
+    applySrc(value) {
+        const me = this;
+        if (me.iframe) {
+            me.iframe.src = value;
         }
-    }
+    },
+    // applyTarget(value) {
+    //     const me = this;
+    //     if (me.iframe) {
+    //         me.iframe.target = value;
+    //     }
+    // }
+
 });

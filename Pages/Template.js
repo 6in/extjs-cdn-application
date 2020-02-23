@@ -3,6 +3,9 @@ Ext.define('Pages.TemplateViewModel', {
     alias: 'viewmodel.Template',
     data: {
         title: 'Page title',
+    },
+    stores: {
+
     }
 });
 
@@ -20,9 +23,6 @@ Ext.define('Pages.Template', {
 
     controller: 'Template',
     viewModel: 'Template',
-
-    alias: 'widget.template',
-    iconCls: 'fa fa-cat',
 
     bind: {
         title: '{title}'

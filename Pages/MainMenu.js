@@ -17,11 +17,12 @@ Ext.define('Pages.MainMenuViewModel', {
     stores: {
         menu: {
             type: 'tree',
-            fields: [
-                { name: 'name', type: 'string' },
-                { name: 'page', type: 'string' },
-                { name: 'description', type: 'string' },
-            ],
+            model: 'TreeDataModel',
+            // fields: [
+            //     { name: 'name', type: 'string' },
+            //     { name: 'page', type: 'string' },
+            //     { name: 'description', type: 'string' },
+            // ],
             root: {
                 text: 'root',
                 expanded: true,
@@ -30,17 +31,23 @@ Ext.define('Pages.MainMenuViewModel', {
                     expanded: true,
                     children: [
                         {
-                            text: 'Template',
                             name: 'Template',
                             page: 'Pages.Template',
                             description: 'ページテンプレート',
+                            // (font-awesome) https://fontawesome.com/icons?d=gallery
+                            iconCls: 'fa fa-cat',
                             leaf: true
-                        },
-                        {
-                            text: 'Sample',
-                            name: 'Sample',
-                            page: 'Pages.Sample',
+                        }, {
+                            name: 'Monaco',
+                            page: 'Pages.MonacoSample',
                             description: 'Monacoエディタサンプル',
+                            iconCls: 'fa fa-anchor',
+                            leaf: true
+                        }, {
+                            name: 'Sample',
+                            page: 'Pages.ComponentSample',
+                            description: 'サンプル',
+                            iconCls: 'fa fa-ambulance',
                             leaf: true
                         }
                     ]
@@ -73,10 +80,16 @@ Ext.define('Page.MainMenuController', {
         if (existsPanel.length === 0) {
             // ページのロード完了後に表示
             Ext.require(page, () => {
-                const newPanel = tabPanel.add(Ext.create(page, {
-                    closable: true
-                }));
-                tabPanel.setActiveTab(newPanel);
+                try {
+                    const newPanel = tabPanel.add(Ext.create(page, {
+                        closable: true,
+                        iconCls: menu.data.iconCls
+                    }));
+                    tabPanel.setActiveTab(newPanel);
+                } catch (e) {
+                    console.log(e.message);
+                    console.log(e.stack);
+                }
             });
         } else {
             tabPanel.setActiveTab(existsPanel[0]);
