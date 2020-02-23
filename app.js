@@ -22,6 +22,7 @@ Ext.application({
                 'Pages.components.MonacoDiff',
                 'Pages.components.Iframe',
                 'Pages.components.HandsonTable',
+                'Pages.components.Markdown',
             ]
             // ページをロードする
             Ext.require(pages, this.createViewPort);

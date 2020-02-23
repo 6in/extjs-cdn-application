@@ -18,11 +18,6 @@ Ext.define('Pages.MainMenuViewModel', {
         menu: {
             type: 'tree',
             model: 'TreeDataModel',
-            // fields: [
-            //     { name: 'name', type: 'string' },
-            //     { name: 'page', type: 'string' },
-            //     { name: 'description', type: 'string' },
-            // ],
             root: {
                 text: 'root',
                 expanded: true,
