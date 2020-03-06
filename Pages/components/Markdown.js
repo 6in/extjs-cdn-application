@@ -20,7 +20,7 @@ Ext.define('Pages.components.Markdown', {
         return this.callParent(arguments)
     },
     // コンポーネントの表示領域
-    renderTpl: '<div id="{id}_component" style="width: 100%; height: 100%"></div>',
+    renderTpl: '<div id="{id}_component" style="width: 100%; height: 100%; overflow: scroll"></div>',
 
     listeners: {
         /**
