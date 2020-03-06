@@ -31,8 +31,15 @@ That's it.  Pretty simple.  There's also a drop-down option in the upper right t
 
 [Marked]: https://github.com/markedjs/marked/
 [Markdown]: http://daringfireball.net/projects/markdown/
-    `
-    }
+    `,
+        diagram: `
+graph TD;
+A-->B;
+A-->C;
+B-->D;
+C-->D;    
+`
+    },
 });
 
 Ext.define('Page.ComponentSampleController', {
@@ -120,6 +127,31 @@ Ext.define('Pages.ComponentSample', {
                 }
             }
         },
+        {
+            flex: 0.1,
+            title: 'Mermaid',
+            layout: {
+                type: 'hbox',
+                align: 'stretch',
+                pack: 'start'
+            },
+            items: [
+                {
+                    xtype: 'monaco',
+                    flex: 0.5,
+                    bind: {
+                        value: '{diagram}'
+                    }
+                },
+                {
+                    xtype: 'mermaid',
+                    flex: 0.5,
+                    bind: {
+                        value: '{diagram}'
+                    }
+                }]
+        },
+
     ]
 
 });

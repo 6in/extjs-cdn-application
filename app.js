@@ -23,6 +23,7 @@ Ext.application({
                 'Pages.components.Iframe',
                 'Pages.components.HandsonTable',
                 'Pages.components.Markdown',
+                'Pages.components.Mermaid',
             ]
             // ページをロードする
             Ext.require(pages, this.createViewPort);
