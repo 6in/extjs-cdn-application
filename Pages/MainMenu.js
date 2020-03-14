@@ -21,32 +21,46 @@ Ext.define('Pages.MainMenuViewModel', {
             root: {
                 text: 'root',
                 expanded: true,
-                children: [{
-                    name: 'ツール',
-                    expanded: true,
-                    children: [
-                        {
-                            name: 'Template',
-                            page: 'Pages.Template',
-                            description: 'ページテンプレート',
-                            // (font-awesome) https://fontawesome.com/icons?d=gallery
-                            iconCls: 'fa fa-cat',
-                            leaf: true
-                        }, {
-                            name: 'Monaco',
-                            page: 'Pages.MonacoSample',
-                            description: 'Monacoエディタサンプル',
-                            iconCls: 'fa fa-anchor',
-                            leaf: true
-                        }, {
-                            name: 'Sample',
-                            page: 'Pages.ComponentSample',
-                            description: 'サンプル',
-                            iconCls: 'fa fa-ambulance',
-                            leaf: true
-                        }
-                    ]
-                }]
+                children: [
+                    {
+                        name: 'ツール',
+                        expanded: true,
+                        children: [
+                            {
+                                name: '正規表現さん',
+                                page: 'Pages.RegExpChecker',
+                                description: '正規表現テストツール',
+                                iconCls: 'fa fa-cat',
+                                leaf: true
+                            },
+                        ]
+                    }
+                    , {
+                        name: 'サンプル',
+                        expanded: true,
+                        children: [
+                            {
+                                name: 'Template',
+                                page: 'Pages.Template',
+                                description: 'ページテンプレート',
+                                // (font-awesome) https://fontawesome.com/icons?d=gallery
+                                iconCls: 'fa fa-cat',
+                                leaf: true
+                            }, {
+                                name: 'Monaco',
+                                page: 'Pages.MonacoSample',
+                                description: 'Monacoエディタサンプル',
+                                iconCls: 'fa fa-anchor',
+                                leaf: true
+                            }, {
+                                name: 'Sample',
+                                page: 'Pages.ComponentSample',
+                                description: 'サンプル',
+                                iconCls: 'fa fa-ambulance',
+                                leaf: true
+                            }
+                        ]
+                    }]
             }
         }
     }
@@ -58,6 +72,19 @@ Ext.define('Page.MainMenuController', {
     init() {
         const me = this
         me.callParent(arguments);
+    },
+    afterrender() {
+        const me = this
+        if (document.location.search.match(/\?page=(\w+)/)) {
+            pageName = `Pages.${RegExp.$1}`
+            console.log(pageName)
+            me.getView().collapse()
+            menu = {
+                data: { page: pageName },
+                isLeaf() { return true }
+            }
+            me.onMenuSelect(null, menu)
+        }
     },
     onMenuSelect(obj, menu) {
         if (!menu.isLeaf()) {
@@ -144,5 +171,8 @@ Ext.define('Pages.MainMenu', {
         listeners: {
             itemdblclick: 'onMenuSelect'
         }
+    },
+    listeners: {
+        afterrender: 'afterrender'
     }
 });
