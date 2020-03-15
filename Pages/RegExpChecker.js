@@ -169,9 +169,9 @@ Ext.define('Page.RegExpCheckerController', {
             if (line.trim() == '') {
                 return;
             }
-            maxLoop = 100;
+            let maxLoop = 100;
             const matchGroup = [lineNo + 1];
-            while (maxLoop >= 0) {
+            while (--maxLoop >= 0) {
                 regArray = pattern.exec(line)
                 if (regArray === null) {
                     // return;
