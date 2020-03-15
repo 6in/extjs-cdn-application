@@ -152,7 +152,7 @@ Ext.define('Page.RegExpCheckerController', {
         }
 
         // URLを変更
-        const regexpUrl = `${data.regexpUrlBase}/#!embed=true&flags=&re=${encodeURI(parseResult.keyword)}`
+        const regexpUrl = `${data.regexpUrlBase}/?p=${new Date().getTime()}#!embed=true&flags=&re=${encodeURI(parseResult.keyword)}`
 
         // １行ずつ正規表現であてて、マーカーを設定
         const matchGroups = [];
