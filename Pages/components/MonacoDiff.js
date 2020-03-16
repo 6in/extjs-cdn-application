@@ -14,20 +14,26 @@ Ext.define('Pages.components.MonacoDiff', {
     initComponent() {
     },
     setOriginal(text) {
+        const me = this
         this.callParent([text])
-        this.setModel()
+        me.setModel();
     },
     setModified(text) {
         this.callParent([text])
-        this.setModel()
+        const me = this
+        me.setModel();
     },
     setModel() {
         const me = this
         if (!me.editor) {
             return;
         }
-        var originalModel = monaco.editor.createModel(me.getOriginal());
-        var modifiedModel = monaco.editor.createModel(me.getModified());
+        const originalModel = monaco.editor.createModel(me.getOriginal());
+        let modified = me.getModified();
+        if (modified.trim() == "") {
+            modified = me.editor.getModifiedEditor().getValue();
+        }
+        const modifiedModel = monaco.editor.createModel(modified);
         me.editor.setModel({
             original: originalModel,
             modified: modifiedModel

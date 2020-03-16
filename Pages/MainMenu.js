@@ -33,6 +33,14 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-cat',
                                 leaf: true
                             },
+                            {
+                                name: 'Diffさん',
+                                page: 'Pages.DiffViewer',
+                                description: 'Diff表示',
+                                iconCls: 'fa fa-cat',
+                                leaf: true
+                            },
+
                         ]
                     }
                     , {
