@@ -24,6 +24,7 @@ Ext.application({
                 'Pages.components.HandsonTable',
                 'Pages.components.Markdown',
                 'Pages.components.Mermaid',
+                'Pages.components.Utils',
             ]
             // ページをロードする
             Ext.require(pages, this.createViewPort);

@@ -29,18 +29,24 @@ Ext.define('Pages.MainMenuViewModel', {
                             {
                                 name: '正規表現さん',
                                 page: 'Pages.RegExpChecker',
-                                description: '正規表現テストツール',
+                                description: '正規表現テストツールです',
                                 iconCls: 'fa fa-cat',
                                 leaf: true
                             },
                             {
                                 name: 'Diffさん',
                                 page: 'Pages.DiffViewer',
-                                description: 'Diff表示',
+                                description: 'お手軽Diff表示ツールです',
                                 iconCls: 'fa fa-cat',
                                 leaf: true
                             },
-
+                            {
+                                name: '罫線さん',
+                                page: 'Pages.KeisenMaker',
+                                description: '罫線表の相互変換ツールです',
+                                iconCls: 'fa fa-cat',
+                                leaf: true
+                            },
                         ]
                     }
                     , {
