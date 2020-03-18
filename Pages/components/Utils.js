@@ -462,4 +462,73 @@ Ext.define("StrUtil", {
     }
 });
 
+
+Ext.define("TreeUtil", {
+    statics: {
+        tabSize: 2,
+        keisenSet: {
+            normal: {
+                line: "+---",
+                bar: "|",
+                stop: "\\",
+                cross: "+",
+                space: " ",
+                indent: 4
+            },
+            zenkaku: {
+                line: "├─",
+                bar: "│",
+                cross: "├",
+                stop: "└",
+                space: "　",
+                indent: 2
+            },
+            zenkakub: {
+                line: "┣━",
+                bar: "┃",
+                cross: "┣",
+                stop: "┗",
+                space: "　",
+                indent: 2
+            }
+        },
+        currentSet: "normal",
+        checkIndent: function (line) {
+            var level, name, result;
+            result = line.split(/(^\s*)/);
+            level = 0;
+            name = line;
+            if (result.length === 3) {
+                level = result[1].length;
+                name = result[2];
+            }
+            return [level / TreeUtil.tabSize, name];
+        },
+        repeat: function (text, count) {
+            var buff, i, j, ref;
+            buff = [""];
+            if (count > 0) {
+                for (i = j = 0, ref = count - 1; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+                    buff.push(text);
+                }
+            }
+            return buff.join("");
+        },
+        lineFromToUp: function (buff, row, col) {
+            var i, j, keisen, ref, results;
+            row = row - 1;
+            keisen = TreeUtil.keisenSet[TreeUtil.currentSet];
+            results = [];
+            for (i = j = ref = row; j >= 0; i = j += -1) {
+                if (buff[i][1][col] === keisen.space) {
+                    results.push(buff[i][1][col] = keisen.bar);
+                } else {
+                    break;
+                }
+            }
+            return results;
+        }
+    }
+});
+
 Ext.define('Pages.components.Utils', {});

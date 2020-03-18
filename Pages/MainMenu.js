@@ -54,6 +54,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-cat',
                                 leaf: true
                             },
+                            {
+                                name: 'Treeさん',
+                                page: 'Pages.TreeMaker',
+                                description: 'ツリーテキストを生成します。',
+                                iconCls: 'fa fa-cat',
+                                leaf: true
+                            },
                         ]
                     }
                     , {

@@ -200,7 +200,8 @@ Ext.define('Pages.DualMaker.MainView', {
                 {
                     text: 'Dual表へ変換',
                     handler: 'onMakeDual',
-                    iconCls: 'fa fa-chevron-right'
+                    iconCls: 'fa fa-chevron-right',
+                    iconAlign: 'right'
                 }
             ],
             items: {

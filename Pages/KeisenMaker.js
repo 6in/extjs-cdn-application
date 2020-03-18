@@ -154,7 +154,8 @@ Ext.define('Pages.KeisenMaker.MainView', {
                 {
                     text: '罫線へ変換',
                     handler: 'onMakeKeisen',
-                    iconCls: 'fa fa-chevron-right'
+                    iconCls: 'fa fa-chevron-right',
+                    iconAlign: 'right'
                 }
             ],
             items: {
