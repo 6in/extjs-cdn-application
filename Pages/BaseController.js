@@ -70,5 +70,8 @@ Ext.define('Pages.BaseController', {
                 }
             })
         })
+    },
+    getConst(me) {
+        // return me.getView().up('#viewport').down('#mainmenu').getController().constYaml
     }
 });

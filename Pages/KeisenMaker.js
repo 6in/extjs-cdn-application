@@ -18,6 +18,7 @@ Ext.define('Page.KeisenMakerController', {
     init() {
         const me = this
         me.callParent(arguments)
+
         me.delay(100, () => {
             me.onAddSheet();
         });
@@ -25,6 +26,8 @@ Ext.define('Page.KeisenMakerController', {
     onAddSheet() {
         const me = this;
         const tabs = me.lookupReference('tabs');
+        console.log(me.constYaml);
+
         let counter = me.getViewModel().getData().counter
         tabs.setActiveTab(tabs.add(
             Ext.create('Pages.KeisenMaker.MainView', {

@@ -39,6 +39,7 @@ Ext.application({
             items: [{
                 region: 'west',
                 title: 'Home',
+                itemId: 'mainmenu',
                 iconCls: 'fa fa-home',
                 collapsible: true,
                 split: true,

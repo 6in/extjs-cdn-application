@@ -47,6 +47,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-cat',
                                 leaf: true
                             },
+                            {
+                                name: 'Dualさん',
+                                page: 'Pages.DualMaker',
+                                description: 'Dual表を生成します。',
+                                iconCls: 'fa fa-cat',
+                                leaf: true
+                            },
                         ]
                     }
                     , {
@@ -86,6 +93,10 @@ Ext.define('Page.MainMenuController', {
     init() {
         const me = this
         me.callParent(arguments);
+        me.constYaml = {};
+        me.get('./Pages/resources/const_text.yml').then(({ response, opts }) => {
+            me.constYaml = YAML.parse(response.responseText);
+        });
     },
     afterrender() {
         const me = this
@@ -121,6 +132,7 @@ Ext.define('Page.MainMenuController', {
                         closable: true,
                         iconCls: menu.data.iconCls
                     }));
+                    newPanel.getController().constYaml = me.constYaml;
                     tabPanel.setActiveTab(newPanel);
                 } catch (e) {
                     console.log(e.message);
