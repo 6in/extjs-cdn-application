@@ -1,2 +1,34 @@
 key: |
   テキストをここに記述
+
+TreeMaker:
+  inputText: |
+    アジェンダ
+    1 サイトマップとは？
+    2 サイトマップの種類と違い
+    3 HTMLサイトマップ
+      3.1 HTMLサイトマップの作り方
+        3.1.1 手動で作成する方法
+        3.1.2 WordPressのプラグインで作成する方法
+    4 XMLサイトマップ
+      4.1 XMLサイトマップの作り方
+        4.1.1 sitemap.xml Editorを使ってXMLサイトマップを作成する方法
+        4.1.2 WordPressのプラグインで作成する方法
+    5 XMLサイトマップをGoogleに伝える方法
+      5.1 Google Search Consoleを活用する方法
+      5.2 robots.txtを用いる方法
+CaseFormatMaker:
+  inputText: |
+    SNAKE_CASE_1  # コメント1
+    snake_case_2  // コメント2
+      CamelCase_3 -- コメント3
+      camelCase4,  # カンマ、スペースは除去
+        TRAIN-CASE-5
+        train-case-6
+          UPPERCASE7,
+          lowercase8
+    "Abc_Def"  # " は除去
+    'ghi_Jkl'  # ' は除去
+    MNO-PQR
+    Stu
+    VWXYZ

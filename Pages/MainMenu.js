@@ -61,6 +61,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-cat',
                                 leaf: true
                             },
+                            {
+                                name: 'なんとかケースさん',
+                                page: 'Pages.CaseFormatMaker',
+                                description: '単語のケースフォーマットの相互変換を行います。',
+                                iconCls: 'fa fa-cat',
+                                leaf: true
+                            },
                         ]
                     }
                     , {
@@ -97,12 +104,15 @@ Ext.define('Pages.MainMenuViewModel', {
 Ext.define('Page.MainMenuController', {
     extend: 'Pages.BaseController',
     alias: 'controller.MainMenu',
+    static: {
+        constYaml: {},
+    },
     init() {
         const me = this
         me.callParent(arguments);
         me.constYaml = {};
         me.get('./Pages/resources/const_text.yml').then(({ response, opts }) => {
-            me.constYaml = YAML.parse(response.responseText);
+            Page.MainMenuController.constYaml = YAML.parse(response.responseText);
         });
     },
     afterrender() {

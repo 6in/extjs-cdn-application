@@ -531,4 +531,97 @@ Ext.define("TreeUtil", {
     }
 });
 
+Ext.define("AnyConvert", {
+    statics: {
+        reg_SNAKE_CASE: /^([A-Z][A-Za-z0-9_]+)$/,
+        reg_snake_case: /^([a-z][A-Za-z0-9_]+)$/,
+        reg_CamelCase: /^([A-Z][a-zA-Z0-9]+)$/,
+        reg_camelCase: /^([a-z][a-zA-Z0-9]+)$/,
+        reg_TRAIN_CASE: /^([A-Z][A-Z0-9\-]+)$/,
+        reg_train_case: /^([a-z][a-z0-9\-]+)$/,
+        reg_UPPERCASE: /^([A-Z0-9]+)$/,
+        reg_lowercase: /^([a-z0-9]+)$/
+    },
+    constructor: function (args) {
+        var me, word;
+        me = this;
+        me.tokens = [];
+        me.srcType = "";
+        me.srcWord = args.word;
+        me.cmnt = args.cmnt;
+        word = args.word;
+        if (word.match(AnyConvert.reg_SNAKE_CASE)) {
+            me.srcType = "SNAKE_CASE";
+            me.tokens = word.split(/_+/);
+        }
+        if (word.match(AnyConvert.reg_snake_case)) {
+            me.srcType = "snake_case";
+            me.tokens = word.split(/_+/);
+        }
+        if (word.match(AnyConvert.reg_CamelCase)) {
+            me.srcType = "CamelCase";
+            me.tokens = word.slice(1).split(/([A-Z][a-z0-9]+)/).filter(function (t) {
+                return t !== "";
+            });
+            me.tokens[0] = word[0] + me.tokens[0];
+        }
+        if (word.match(AnyConvert.reg_camelCase)) {
+            me.srcType = "camelCase";
+            me.tokens = word.split(/([A-Z][a-z0-9]+)/).filter(function (t) {
+                return t !== "";
+            });
+        }
+        if (word.match(AnyConvert.reg_TRAIN_CASE)) {
+            me.srcType = "TRAIN-CASE";
+            me.tokens = word.split(/-+/);
+        }
+        if (word.match(AnyConvert.reg_train_case)) {
+            me.srcType = "train-case";
+            me.tokens = word.split(/-+/);
+        }
+        if (word.match(AnyConvert.reg_UPPERCASE)) {
+            me.srcType = "UPPERCASE";
+            me.tokens = [word];
+        }
+        if (word.match(AnyConvert.reg_lowercase)) {
+            me.srcType = "lowercase";
+            me.tokens = [word];
+        }
+        me.Tokens = me.tokens.map(function (token) {
+            return token[0].toUpperCase() + token.slice(1).toLowerCase();
+        });
+        me.Uppers = me.tokens.map(function (token) {
+            return token.toUpperCase();
+        });
+        me.Lowers = me.tokens.map(function (token) {
+            return token.toLowerCase();
+        });
+    },
+    getRow: function () {
+        var me;
+        me = this;
+        return {
+            org: me.srcWord,
+            type: me.srcType,
+            Comment: me.cmnt,
+            SNAKE_CASE: me.Tokens.join("_").toUpperCase(),
+            snake_Case: [me.Lowers[0]].concat(me.Tokens.slice(1)).join("_").toLowerCase(),
+            CamelCase: me.Tokens.join(""),
+            camelCase: [me.Lowers[0]].concat(me.Tokens.slice(1)).join(""),
+            "TRAIN-CASE": me.Uppers.join("-"),
+            "train-case": [me.Lowers[0]].concat(me.Lowers.slice(1)).join("-"),
+            UPPERCASE: me.srcWord.toUpperCase(),
+            lowercase: me.srcWord.toLowerCase(),
+            regexp: me.getRegExpPattern()
+        };
+    },
+    getRegExpPattern: function () {
+        var me;
+        me = this;
+        return me.Lowers.map(function (token) {
+            return "[" + (token[0].toUpperCase()) + token[0] + "]" + token.slice(1);
+        }).join("[-_]*");
+    }
+});
+
 Ext.define('Pages.components.Utils', {});

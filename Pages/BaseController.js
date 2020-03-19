@@ -71,7 +71,7 @@ Ext.define('Pages.BaseController', {
             })
         })
     },
-    getConst(me) {
-        // return me.getView().up('#viewport').down('#mainmenu').getController().constYaml
+    getConst(key) {
+        return Object.assign({}, Page.MainMenuController.constYaml[key]);
     }
 });

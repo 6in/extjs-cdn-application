@@ -18,7 +18,6 @@ Ext.define('Page.TreeMakerController', {
     init() {
         const me = this
         me.callParent(arguments)
-
         me.delay(100, () => {
             me.onAddSheet();
         });
@@ -26,7 +25,6 @@ Ext.define('Page.TreeMakerController', {
     onAddSheet() {
         const me = this;
         const tabs = me.lookupReference('tabs');
-        console.log(me.constYaml);
 
         let counter = me.getViewModel().getData().counter
         tabs.setActiveTab(tabs.add(
@@ -45,20 +43,7 @@ Ext.define('Pages.TreeMakerMainViewViewModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.TreeMakerMainView',
     data: {
-        inputText: `アジェンダ
-  1 サイトマップとは？
-  2 サイトマップの種類と違い
-  3 HTMLサイトマップ
-    3.1 HTMLサイトマップの作り方
-      3.1.1 手動で作成する方法
-      3.1.2 WordPressのプラグインで作成する方法
-  4 XMLサイトマップ
-    4.1 XMLサイトマップの作り方
-      4.1.1 sitemap.xml Editorを使ってXMLサイトマップを作成する方法
-      4.1.2 WordPressのプラグインで作成する方法
-  5 XMLサイトマップをGoogleに伝える方法
-    5.1 Google Search Consoleを活用する方法
-    5.2 robots.txtを用いる方法`,
+        inputText: '',
         outputText: '',
         treeType: 'normal',
     },
@@ -69,9 +54,18 @@ Ext.define('Pages.TreeMakerMainViewViewModel', {
 Ext.define('Page.TreeMakerMainViewController', {
     extend: 'Pages.BaseController',
     alias: 'controller.TreeMakerMainView',
+    static: {
+        inputText: ''
+    },
     init() {
         const me = this
         me.callParent(arguments)
+        me.delay(100, () => {
+            console.log(me.constYaml);
+            me.getViewModel().setData({
+                inputText: me.getConst('TreeMaker').inputText
+            });
+        });
     },
     onChangeInputText() {
         const me = this;
@@ -152,6 +146,23 @@ Ext.define('Pages.TreeMaker.MainView', {
             title: '入力データ',
             layout: 'fit',
             split: true,
+            tbar: [
+                {
+                    xtype: 'label',
+                    text: 'インデントでツリーの階層を編集してください。',
+                    flex: 1,
+                }, {
+                    // 隣のペインとのツールバーとの高さ合わせのため
+                    xtype: 'segmentedbutton',
+                    width: 0,
+                    // hidden: true,
+                    items: [
+                        {
+                            text: '',
+                        },
+                    ]
+                }
+            ],
             items: {
                 xtype: 'monaco',
                 bind: {
@@ -171,7 +182,7 @@ Ext.define('Pages.TreeMaker.MainView', {
                 {
                     xtype: 'segmentedbutton',
                     defaultUI: "default-toolbar",
-                    value: 'normal',
+                    value: 'zenkaku',
                     items: [
                         {
                             text: '半角',
