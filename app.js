@@ -13,7 +13,7 @@ Ext.application({
                 resolve()
             })
         }).then((respose) => {
-            // あらかじめロードするページ一覧
+            // あらかじめロードするコンポーネント一覧
             const pages = [
                 'Pages.BaseController',
                 'Pages.MainMenu',
@@ -25,6 +25,7 @@ Ext.application({
                 'Pages.components.Markdown',
                 'Pages.components.Mermaid',
                 'Pages.components.Utils',
+                'Pages.components.TemplateUtils',
             ]
             // ページをロードする
             Ext.require(pages, this.createViewPort);

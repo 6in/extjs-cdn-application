@@ -68,6 +68,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-cat',
                                 leaf: true
                             },
+                            {
+                                name: '汎用テンプレートさん',
+                                page: 'Pages.GenericTemplate',
+                                description: 'テーブルデータを加工します',
+                                iconCls: 'fa fa-cat',
+                                leaf: true
+                            },
                         ]
                     }
                     , {

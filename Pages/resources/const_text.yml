@@ -32,3 +32,41 @@ CaseFormatMaker:
     MNO-PQR
     Stu
     VWXYZ
+GenericTemplate:
+  txtSimple: "Simple,{LINE_NO},{COL_1},{COL_2},{COL_3},{COL_4}"
+  txtUnderscore: |
+    ### Underscoreのテンプレートを記述します
+    ### rowsには行データ、colsにはカラム名が格納されています
+    ### セル内Jsonを変換にチェックを入れると、row.COL_5[0].LAST_NAMEが適用されます
+    <% _.each( rows,function(row,i) { %> \
+    Underscore,<%=row.LINE_NO%>,<%=row.COL_1%>,<%=row.COL_2%>,<%=row.COL_3%>,<%=row.COL_4%>
+    <% }) %> \
+  txtJavaScript: |
+    // Javascriptにて加工処理を実装します
+    // rowsには行データ、colsにはカラム名が格納されています
+    result = []
+    rows.forEach( (row,i) => {
+      result.push(`JavaScript,${row.LINE_NO},${row.COL_1},${row.COL_2},${row.COL_3},${row.COL_4}`)
+    })
+  readme: |
+    概要　  
+    ========================
+
+    * 左のシートのデータに対して、テンプレートを適用し、テキストを生成します。
+    
+    Simple
+    ------------------------
+    
+    * シンプルなテンプレートです。
+    * `{カラム名}` でフィールドの埋め込みができます。
+    
+    Underscore
+    ------------------------
+    
+    * Underscore.jsのテンプレートを利用して、テキスト生成します。
+    
+    JavaScript
+    ------------------------
+    
+      * JavaScriptを記述して、テキストを生成します。
+  
