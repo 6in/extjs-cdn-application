@@ -19,8 +19,8 @@ Ext.define('Pages.components.MonacoDiff', {
         me.setModel();
     },
     setModified(text) {
-        this.callParent([text])
         const me = this
+        this.callParent([text])
         me.setModel();
     },
     setModel() {
@@ -50,6 +50,17 @@ Ext.define('Pages.components.MonacoDiff', {
             me.editor = monaco.editor.createDiffEditor(me.targetDiv, options);
             me.setModel()
             me.editor.getOriginalEditor().updateOptions({readOnly:false})
+
+            // me.editor.getOriginalEditor().onDidChangeModelContent(event => {
+            //     const value = me.editor.getOriginalEditor().getValue();
+            //     me.fireEvent('change', me, [value]);
+            //     me.setOriginal(value);
+            // });
+            // me.editor.getModifiedEditor().onDidChangeModelContent(event => {
+            //     const value = me.editor.getModifiedEditor().getValue();
+            //     me.fireEvent('change', me, [value]);
+            //     me.setModified(value);
+            // });
         },
         resize(obj, width, height) {
             const me = this

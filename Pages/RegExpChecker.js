@@ -292,7 +292,7 @@ Ext.define('Pages.RegExpChecker', {
     items: [
         {
             region: 'west',
-            width: 300,
+            width: 200,
             title: '保存済み正規表現',
             split: true,
             collapsible: true,
@@ -327,9 +327,10 @@ Ext.define('Pages.RegExpChecker', {
             layout: 'border',
             items: [{
                 region: 'north',
-                height: 400,
+                height: 300,
                 title: '拡張正規表現',
                 layout: 'fit',
+                collapsible: true,
                 items: {
                     xtype: 'monaco',
                     bind: {
@@ -403,7 +404,7 @@ Ext.define('Pages.RegExpChecker', {
             },
             {
                 region: 'north',
-                height: 280,
+                height: 200,
                 title: 'ダイアグラム',
                 layout: 'fit',
                 split: true,
@@ -417,7 +418,6 @@ Ext.define('Pages.RegExpChecker', {
             },
             {
                 region: 'center',
-                height: 200,
                 title: '検査対象／結果',
                 xtype: 'tabpanel',
                 items: [

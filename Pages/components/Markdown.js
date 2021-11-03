@@ -32,13 +32,13 @@ Ext.define('Pages.components.Markdown', {
             // 表示領域を取得する
             const id = `${this.getId()}_component`;
             me.elm = document.getElementById(id);
-            me.elm.innerHTML = marked(me.config.value);
+            me.elm.innerHTML = marked.parse(me.config.value);
         }
     },
     applyValue(value) {
         const me = this
         if (me.elm) {
-            me.elm.innerHTML = marked(value);
+            me.elm.innerHTML = marked.parse(value);
         }
     }
 });

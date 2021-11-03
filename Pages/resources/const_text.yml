@@ -70,3 +70,57 @@ GenericTemplate:
     
       * JavaScriptを記述して、テキストを生成します。
   
+ReplaceText:
+  inputText: |
+    // 変換処理を記述してください
+    function convert(text) {
+      // debugger
+      text = text.replace(/テキスト/g,"文字列")
+      text = text.replace(/貼り付け/g,"ペーストし")
+      return text
+    }
+  original: |
+    ここに変換前のテキストを貼り付けてください。
+    ここに変換前のテキストを貼り付けてください。
+    ここに変換前のテキストを貼り付けてください。
+  modified: ''
+  iframeScript: |
+    console.log("script installed")
+
+    function removeScript() {
+      const oldScript = document.querySelector("#script-runtime")
+      if (oldScript) {
+        console.log('remove old script')
+        oldScript.parentNode.removeChild(oldScript)
+      }
+    }
+
+    function addScript(scriptText) {
+      const script = document.createElement("script")
+      script.id = "script-runtime"
+      script.type = "text/javascript";
+      script.innerHTML = scriptText
+      document.body.appendChild(script)
+    }
+
+    window.addEventListener('message', event => {
+      const mainWindow = event.source;
+      let result;
+      try {
+        debugger
+        // 以前のScriptタグの消去
+        removeScript()
+
+        // Scriptタグを追加
+        addScript(event.data.script)
+
+        // 変換実行
+        result =  convert(event.data.text)
+
+        // 結果を送信
+        mainWindow.postMessage(result, event.origin);
+      } catch (err) {
+        // 結果を送信
+        mainWindow.postMessage(err, event.origin);
+      }
+    });

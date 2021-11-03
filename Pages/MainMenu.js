@@ -75,6 +75,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-cat',
                                 leaf: true
                             },
+                            {
+                                name: '置換さん',
+                                page: 'Pages.ReplaceText',
+                                description: 'JavaScriptでテキストを置換します',
+                                iconCls: 'fa fa-scroll',
+                                leaf: true
+                            },
                         ]
                     }
                     , {
