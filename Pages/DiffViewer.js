@@ -90,15 +90,6 @@ Ext.define('Pages.DiffViewer.InputDialog', {
 
 Ext.define('Pages.DiffViewer.DiffPanel', {
     extend: 'Ext.panel.Panel',
-    tbar: [
-        {
-            text: 'オリジナルテキストの入力',
-            handler: 'setOriginalText'
-        }, {
-            xtype: 'label',
-            text: '左側(オリジナル)は編集不可となっているので、ボタンをクリックして、左側のテキストを入力して下さい。'
-        }
-    ],
     layout: 'fit',
     items: [
         {

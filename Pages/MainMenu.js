@@ -30,42 +30,42 @@ Ext.define('Pages.MainMenuViewModel', {
                                 name: '正規表現さん',
                                 page: 'Pages.RegExpChecker',
                                 description: '正規表現テストツールです',
-                                iconCls: 'fa fa-cat',
+                                iconCls: 'fa fa-spell-check',
                                 leaf: true
                             },
                             {
                                 name: 'Diffさん',
                                 page: 'Pages.DiffViewer',
                                 description: 'お手軽Diff表示ツールです',
-                                iconCls: 'fa fa-cat',
+                                iconCls: 'fa fa-exchange-alt',
                                 leaf: true
                             },
                             {
                                 name: '罫線さん',
                                 page: 'Pages.KeisenMaker',
                                 description: '罫線表の相互変換ツールです',
-                                iconCls: 'fa fa-cat',
+                                iconCls: 'fa fa-th',
                                 leaf: true
                             },
                             {
                                 name: 'Dualさん',
                                 page: 'Pages.DualMaker',
                                 description: 'Dual表を生成します。',
-                                iconCls: 'fa fa-cat',
+                                iconCls: 'fa fa-table',
                                 leaf: true
                             },
                             {
                                 name: 'Treeさん',
                                 page: 'Pages.TreeMaker',
                                 description: 'ツリーテキストを生成します。',
-                                iconCls: 'fa fa-cat',
+                                iconCls: 'fa fa-stream',
                                 leaf: true
                             },
                             {
                                 name: 'なんとかケースさん',
                                 page: 'Pages.CaseFormatMaker',
                                 description: '単語のケースフォーマットの相互変換を行います。',
-                                iconCls: 'fa fa-cat',
+                                iconCls: 'fa fa-retweet',
                                 leaf: true
                             },
                             {
@@ -99,6 +99,12 @@ Ext.define('Pages.MainMenuViewModel', {
                                 page: 'Pages.ComponentSample',
                                 description: 'サンプル',
                                 iconCls: 'fa fa-ambulance',
+                                leaf: true
+                            }, {
+                                name: 'FontAwesome',
+                                page: 'Pages.FontAwesome',
+                                iconCls: 'fa fa-icons',
+                                description: 'FontAwesomeギャラリー',
                                 leaf: true
                             }
                         ]

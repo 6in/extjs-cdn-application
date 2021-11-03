@@ -49,6 +49,7 @@ Ext.define('Pages.components.MonacoDiff', {
 
             me.editor = monaco.editor.createDiffEditor(me.targetDiv, options);
             me.setModel()
+            me.editor.getOriginalEditor().updateOptions({readOnly:false})
         },
         resize(obj, width, height) {
             const me = this
