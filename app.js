@@ -17,6 +17,7 @@ Ext.application({
             const pages = [
                 'Pages.BaseController',
                 'Pages.MainMenu',
+                'Pages.Readme',
                 'Pages.components.TemplateComponent',
                 'Pages.components.Monaco',
                 'Pages.components.MonacoDiff',
@@ -51,7 +52,11 @@ Ext.application({
                 region: 'center',
                 layout: 'fit',
                 xtype: 'tabpanel',
-                itemId: 'targetPage'
+                itemId: 'targetPage',
+                items: [{
+                    xtype: 'readme'
+                }
+                ]
             }]
         });
     }

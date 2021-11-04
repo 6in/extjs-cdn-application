@@ -1,26 +1,28 @@
-Ext.define('Pages.FontAwesomeViewModel', {
+Ext.define('Pages.SqlJSViewModel', {
   extend: 'Ext.app.ViewModel',
-  alias: 'viewmodel.FontAwesome',
+  alias: 'viewmodel.SqlJS',
   data: {
-      title: 'FontAwesome',
-      url: 'https://fontawesome.com/v5.15/icons?d=gallery',
+      title: 'SqlJS',
+      url: 'https://sql.js.org/examples/GUI/index.html',
   },
 });
 
-Ext.define('Page.FontAwesomeController', {
+Ext.define('Page.SqlJSController', {
   extend: 'Pages.BaseController',
-  alias: 'controller.FontAwesome',
+  alias: 'controller.SqlJS',
   init() {
       const me = this
       me.callParent(arguments)
   },
 });
 
-Ext.define('Pages.FontAwesome', {
+Ext.define('Pages.SqlJS', {
   extend: 'Ext.panel.Panel',
 
-  controller: 'FontAwesome',
-  viewModel: 'FontAwesome',
+  controller: 'SqlJS',
+  viewModel: 'SqlJS',
+
+  // iconCls: 'fa fa-ambulance',
 
   bind: {
       title: '{title}'

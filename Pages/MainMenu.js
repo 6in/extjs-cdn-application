@@ -120,6 +120,12 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-icons',
                                 description: 'FontAwesomeギャラリー',
                                 leaf: true
+                            }, {
+                                name: 'SQL.js',
+                                page: 'Pages.SqlJS',
+                                iconCls: 'fa fa-icons',
+                                description: 'sql.js',
+                                leaf: true
                             }
                         ]
                     }]
