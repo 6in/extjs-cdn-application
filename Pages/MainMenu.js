@@ -82,6 +82,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-scroll',
                                 leaf: true
                             },
+                            {
+                                name: 'Yaml⇔Json変換さん',
+                                page: 'Pages.YamlJsonConverter',
+                                description: 'YamlとJsonの相互変換',
+                                iconCls: 'fa fa-scroll',
+                                leaf: true
+                            },
                         ]
                     }
                     , {
@@ -170,6 +177,9 @@ Ext.define('Page.MainMenuController', {
                         iconCls: menu.data.iconCls
                     }));
                     newPanel.getController().constYaml = me.constYaml;
+                    newPanel.getController().getViewModel().setData({
+                        appName: page
+                    })
                     tabPanel.setActiveTab(newPanel);
                 } catch (e) {
                     console.log(e.message);

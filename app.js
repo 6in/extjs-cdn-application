@@ -26,6 +26,7 @@ Ext.application({
                 'Pages.components.Mermaid',
                 'Pages.components.Utils',
                 'Pages.components.TemplateUtils',
+                'Pages.components.AppProperty',
             ]
             // ページをロードする
             Ext.require(pages, this.createViewPort);
