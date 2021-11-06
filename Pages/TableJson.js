@@ -354,7 +354,7 @@ Ext.define("Pages.TableJson.MainView", {
         },
         "->",
         {
-          text: "罫線へ変換",
+          text: "テキスト変換",
           handler: "onMakeTable",
           iconCls: "fa fa-chevron-right",
           iconAlign: "right",
@@ -373,7 +373,7 @@ Ext.define("Pages.TableJson.MainView", {
       layout: "fit",
       tbar: [
         {
-          text: "表へ変換",
+          text: "表変換",
           handler: "onMakeSheet",
           iconCls: "fa fa-chevron-left",
         },
