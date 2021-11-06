@@ -109,9 +109,11 @@ Ext.define('Pages.ReplaceText', {
       tbar: [
         {
           text: 'run',
+          iconCls: 'fa fa-play',
           handler: 'onReplace'
         }, "->", {
           text: 'clear',
+          iconCls: 'fa fa-trash-alt',
           handler: 'onClear',
         }
       ],
