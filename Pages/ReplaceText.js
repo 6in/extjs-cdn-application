@@ -30,7 +30,6 @@ Ext.define('Pages.ReplaceTextController', {
     vm = me.getViewModel();
 
     window.addEventListener('message', event => {
-      debugger
       // スクリプト実行結果を表示
       vm.setData({modified: event.data})
     });
@@ -56,9 +55,7 @@ Ext.define('Pages.ReplaceTextController', {
     me = this;
     vm = me.getViewModel();
     data = vm.getData();
-    functionText = data.inputText + "\n//# sourceURL=my-function.js`"
-    
-    debugger
+    functionText = data.inputText + "\n//# sourceURL=my-function.js`"    
     const scriptBox = me.lookupReference('scriptBox')
     const iframe = scriptBox.iframe
     const original = me.lookupReference('diff').editor.getOriginalEditor().getValue()

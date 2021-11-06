@@ -143,10 +143,10 @@ Ext.define('Pages.GenericTemplateController', {
         val = row[i];
         if (convJson) {
           if ((ref = val[0]) === "[" || ref === "{") {
-            val = JSON.parse(val.replace(/""/g, "\""));
-            console.log({
-              val: val
-            });
+            try {
+              val = JSON.parse(val.replace(/""/g, "\""));
+            } catch (e) {              
+            }
           }
         }
         return newRow[col] = val;

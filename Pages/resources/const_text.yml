@@ -107,7 +107,6 @@ ReplaceText:
       const mainWindow = event.source;
       let result;
       try {
-        debugger
         // 以前のScriptタグの消去
         removeScript()
 

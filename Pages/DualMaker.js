@@ -177,7 +177,7 @@ Ext.define('Pages.DualMaker.MainView', {
     items: [
         {
             region: 'west',
-            width: 600,
+            width: '50%',
             title: 'シート',
             layout: 'fit',
             split: true,

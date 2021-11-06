@@ -89,6 +89,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-scroll',
                                 leaf: true
                             },
+                            {
+                                name: '表⇔Json変換さん',
+                                page: 'Pages.TableJson',
+                                description: '表とJson/Yamlの相互変換',
+                                iconCls: 'fa fa-table',
+                                leaf: true
+                            },
                         ]
                     }
                     , {
@@ -116,14 +123,14 @@ Ext.define('Pages.MainMenuViewModel', {
                                 leaf: true
                             }, {
                                 name: 'FontAwesome',
-                                page: 'Pages.FontAwesome',
-                                iconCls: 'fa fa-icons',
+                                page: 'https://fontawesome.com/v5.15/icons?d=gallery',
+                                iconCls: 'fa fa-link',
                                 description: 'FontAwesomeギャラリー',
                                 leaf: true
                             }, {
                                 name: 'SQL.js',
-                                page: 'Pages.SqlJS',
-                                iconCls: 'fa fa-icons',
+                                page: 'https://sql.js.org/examples/GUI/index.html',
+                                iconCls: 'fa fa-link',
                                 description: 'sql.js',
                                 leaf: true
                             }
@@ -168,30 +175,49 @@ Ext.define('Page.MainMenuController', {
 
         // タブパネルを取得
         const me = this;
-        const { page } = menu.data;
+        const { name, page } = menu.data;
         const tabPanel = me.getView().up('#viewport').down('#targetPage');
 
         const existsPanel = tabPanel.items.items
             .filter(panel => panel.$className === page);
 
         if (existsPanel.length === 0) {
-            // ページのロード完了後に表示
-            Ext.require(page, () => {
-                try {
-                    const newPanel = tabPanel.add(Ext.create(page, {
-                        closable: true,
-                        iconCls: menu.data.iconCls
-                    }));
-                    newPanel.getController().constYaml = me.constYaml;
-                    newPanel.getController().getViewModel().setData({
-                        appName: page
-                    })
-                    tabPanel.setActiveTab(newPanel);
-                } catch (e) {
-                    console.log(e.message);
-                    console.log(e.stack);
-                }
-            });
+            if (page.startsWith("https")) {
+                const newPanel = tabPanel.add({
+                    title: name,
+                    layout: 'fit',
+                    closable: true,
+                    iconCls: menu.data.iconCls,                        
+                    items: {
+                        xtype: 'iframe',
+                        itemId: 'iframe',
+                        src: page,
+                        src2: page
+                    }
+                });
+                tabPanel.setActiveTab(newPanel);
+                me.delay(100, () => {
+                    newPanel.down("#iframe").iframe.src = page
+                })
+            } else {
+                // ページのロード完了後に表示
+                Ext.require(page, () => {
+                    try {
+                        const newPanel = tabPanel.add(Ext.create(page, {
+                            closable: true,
+                            iconCls: menu.data.iconCls
+                        }));
+                        newPanel.getController().constYaml = me.constYaml;
+                        newPanel.getController().getViewModel().setData({
+                            appName: page
+                        })
+                        tabPanel.setActiveTab(newPanel);
+                    } catch (e) {
+                        console.log(e.message);
+                        console.log(e.stack);
+                    }
+                });
+            }
         } else {
             tabPanel.setActiveTab(existsPanel[0]);
         }
@@ -200,7 +226,6 @@ Ext.define('Page.MainMenuController', {
         const me = this
         const menu = me.getViewModel().getStore('menu')
         me.get('./Pages/resources/menu.yml').then(({ response, opts }) => {
-            debugger
             const menuData = YAML.parse(response.responseText);
             const newMenu = Ext.create('Ext.data.TreeStore', {
                 fields: [

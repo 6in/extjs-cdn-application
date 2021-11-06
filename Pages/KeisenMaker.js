@@ -139,7 +139,7 @@ Ext.define('Pages.KeisenMaker.MainView', {
     items: [
         {
             region: 'west',
-            width: 600,
+            width: '50%',
             title: 'シート',
             layout: 'fit',
             split: true,

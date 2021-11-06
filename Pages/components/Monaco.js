@@ -34,6 +34,13 @@ Ext.define('Pages.components.Monaco', {
         }
         this.callParent([text])
     },
+    changeLanguage(lang) {
+        const me = this
+        monaco.editor.setModelLanguage(
+            me.editor.getModel(),
+            lang
+        )
+    },
     listeners: {
         afterrender() {
             const me = this
