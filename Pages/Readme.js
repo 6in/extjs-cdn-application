@@ -11,7 +11,13 @@ ExtJs CDN Application
 セットアップ
 -------------------
 
-* chromestoreで、[Ignore X-Frame Headers](https://chrome.google.com/webstore/detail/ignore-x-frame-headers/gleekbfjekiniecknbkamfmkohkpodhe)をインストールしてください。
+* リンクアイコンのメニューは、iframe内で外部サイトを表示しています。
+* 表示する場合は、chromestoreで[Ignore X-Frame Headers](https://chrome.google.com/webstore/detail/ignore-x-frame-headers/gleekbfjekiniecknbkamfmkohkpodhe)をインストールしてください。
+
+Wiki
+-------------------
+
+* 各アプリの詳細は[こちら](https://github.com/6in/extjs-cdn-application/wiki#extjs-cdn-application)
 
   `
   },

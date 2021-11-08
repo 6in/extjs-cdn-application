@@ -133,6 +133,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-link',
                                 description: 'sql.js',
                                 leaf: true
+                            }, {
+                                name: 'ExtJS 6.2.0 Doc',
+                                page: 'https://docs.sencha.com/extjs/6.2.0/index.html',
+                                iconCls: 'fa fa-link',
+                                description: 'sql.js',
+                                other: true,
+                                leaf: true                                
                             }
                         ]
                     }]
@@ -183,22 +190,26 @@ Ext.define('Page.MainMenuController', {
 
         if (existsPanel.length === 0) {
             if (page.startsWith("https")) {
-                const newPanel = tabPanel.add({
-                    title: name,
-                    layout: 'fit',
-                    closable: true,
-                    iconCls: menu.data.iconCls,                        
-                    items: {
-                        xtype: 'iframe',
-                        itemId: 'iframe',
-                        src: page,
-                        src2: page
-                    }
-                });
-                tabPanel.setActiveTab(newPanel);
-                me.delay(100, () => {
-                    newPanel.down("#iframe").iframe.src = page
-                })
+                if (menu.data.other) {
+                    window.open(page,name)
+                } else {
+                    const newPanel = tabPanel.add({
+                        title: name,
+                        layout: 'fit',
+                        closable: true,
+                        iconCls: menu.data.iconCls,                        
+                        items: {
+                            xtype: 'iframe',
+                            itemId: 'iframe',
+                            src: page,
+                            src2: page
+                        }
+                    });
+                    tabPanel.setActiveTab(newPanel);
+                    me.delay(100, () => {
+                        newPanel.down("#iframe").iframe.src = page
+                    })    
+                }
             } else {
                 // ページのロード完了後に表示
                 Ext.require(page, () => {
