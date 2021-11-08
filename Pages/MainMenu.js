@@ -137,7 +137,7 @@ Ext.define('Pages.MainMenuViewModel', {
                                 name: 'ExtJS 6.2.0 Doc',
                                 page: 'https://docs.sencha.com/extjs/6.2.0/index.html',
                                 iconCls: 'fa fa-link',
-                                description: 'sql.js',
+                                description: 'ExtJS API Document',
                                 other: true,
                                 leaf: true                                
                             }
