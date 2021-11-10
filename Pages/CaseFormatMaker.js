@@ -7,7 +7,7 @@ Ext.define('Pages.CaseFormatMakerViewModel', {
     },
     stores: {
         mystore: {
-            fields: 'org,type,Comment,SNAKE_CASE,snake_Case,CamelCase,camelCase,TRAIN-CASE,train-case,UPPERCASE,LOWERCASE,'.split(","),
+            fields: 'org,type,Comment,SNAKE_CASE,snake_case,CamelCase,camelCase,TRAIN-CASE,train-case,UPPERCASE,LOWERCASE,'.split(","),
             proxy: {
                 type: 'memory',
                 reader: {
@@ -144,7 +144,7 @@ Ext.define('Pages.CaseFormatMaker', {
                     dataIndex: 'SNAKE_CASE'
                 }, {
                     header: 'snake_case',
-                    dataIndex: 'snake_Case'
+                    dataIndex: 'snake_case'
                 }, {
                     header: 'CamelCase',
                     dataIndex: 'CamelCase'

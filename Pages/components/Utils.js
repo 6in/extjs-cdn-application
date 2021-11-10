@@ -605,7 +605,7 @@ Ext.define("AnyConvert", {
             type: me.srcType,
             Comment: me.cmnt,
             SNAKE_CASE: me.Tokens.join("_").toUpperCase(),
-            snake_Case: [me.Lowers[0]].concat(me.Tokens.slice(1)).join("_").toLowerCase(),
+            snake_case: [me.Lowers[0]].concat(me.Tokens.slice(1)).join("_").toLowerCase(),
             CamelCase: me.Tokens.join(""),
             camelCase: [me.Lowers[0]].concat(me.Tokens.slice(1)).join(""),
             "TRAIN-CASE": me.Uppers.join("-"),
