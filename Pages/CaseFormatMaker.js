@@ -101,7 +101,7 @@ Ext.define('Pages.CaseFormatMaker', {
         {
             region: 'west',
             title: '入力エリア',
-            width: 600,
+            width: "50%",
             split: true,
             tbar: [
                 '->',

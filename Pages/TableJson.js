@@ -195,7 +195,7 @@ Ext.define("Pages.TableJsonViewModel", {
   stores: {},
 });
 
-Ext.define("Page.TableJsonController", {
+Ext.define("Pages.TableJsonController", {
   extend: "Pages.BaseController",
   alias: "controller.TableJson",
   init() {
@@ -220,6 +220,13 @@ Ext.define("Page.TableJsonController", {
         })
       )
     );
+    tabs.getActiveTab().getViewModel().setData({
+      rows: [
+        ['A', 'B', 'C', 'D'],
+        ['1', '2', '3', '4'],
+        ['5', '6', '7', '8'],
+      ]
+    })
     me.getViewModel().setData({
       counter,
     });
@@ -249,7 +256,7 @@ Ext.define("Pages.TableJsonMainViewViewModel", {
   stores: {},
 });
 
-Ext.define("Page.TableJsonMainViewController", {
+Ext.define("Pages.TableJsonMainViewController", {
   extend: "Pages.BaseController",
   alias: "controller.TableJsonMainView",
   init() {

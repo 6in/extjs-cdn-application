@@ -12,7 +12,7 @@ Ext.define('Pages.KeisenMakerViewModel', {
     }
 });
 
-Ext.define('Page.KeisenMakerController', {
+Ext.define('Pages.KeisenMakerController', {
     extend: 'Pages.BaseController',
     alias: 'controller.KeisenMaker',
     init() {
@@ -29,16 +29,47 @@ Ext.define('Page.KeisenMakerController', {
         console.log(me.constYaml);
 
         let counter = me.getViewModel().getData().counter
-        tabs.setActiveTab(tabs.add(
-            Ext.create('Pages.KeisenMaker.MainView', {
-                title: `シート-${counter++}`,
-                closable: true,
-            })
-        ));
+        const newTab = Ext.create("Pages.KeisenMakerMainView",{
+            title: `シート-${counter++}`,
+            closable: true,
+        })
+        newTab.getViewModel().setData({
+            rows: [
+                ['A', 'B', 'C', 'D'],
+                ['1', '2', '3', '4'],
+                ['5', '6', '7', '8'],
+            ]
+        })
+        tabs.setActiveTab(tabs.add(newTab));
         me.getViewModel().setData({
             counter
         });
     }
+});
+
+Ext.define('Pages.KeisenMaker', {
+    extend: 'Ext.panel.Panel',
+    controller: 'KeisenMaker',
+    viewModel: 'KeisenMaker',
+
+    bind: {
+        title: '{title}'
+    },
+    layout: 'fit',
+    items: [
+        {
+            xtype: 'tabpanel',
+            reference: 'tabs',
+            tbar: [
+                {
+                    text: 'Add',
+                    iconCls: 'fa fa-plus',
+                    handler: 'onAddSheet'
+                },
+            ]
+        },
+    ]
+
 });
 
 Ext.define('Pages.KeisenMakerMainViewViewModel', {
@@ -55,11 +86,13 @@ Ext.define('Pages.KeisenMakerMainViewViewModel', {
         keisenText: '',
     },
     stores: {
-
+    },
+    constructor() {
+        this.callParent(arguments)
     }
 });
 
-Ext.define('Page.KeisenMakerMainViewController', {
+Ext.define('Pages.KeisenMakerMainViewController', {
     extend: 'Pages.BaseController',
     alias: 'controller.KeisenMakerMainView',
     init() {
@@ -128,10 +161,9 @@ Ext.define('Page.KeisenMakerMainViewController', {
 
 });
 
-
-Ext.define('Pages.KeisenMaker.MainView', {
+Ext.define('Pages.KeisenMakerMainView', {
     extend: 'Ext.panel.Panel',
-
+    alias: 'widget.keisen',
     controller: 'KeisenMakerMainView',
     viewModel: 'KeisenMakerMainView',
 
@@ -210,28 +242,3 @@ Ext.define('Pages.KeisenMaker.MainView', {
     ]
 });
 
-Ext.define('Pages.KeisenMaker', {
-    extend: 'Ext.panel.Panel',
-
-    controller: 'KeisenMaker',
-    viewModel: 'KeisenMaker',
-
-    bind: {
-        title: '{title}'
-    },
-    layout: 'fit',
-    items: [
-        {
-            xtype: 'tabpanel',
-            reference: 'tabs',
-            tbar: [
-                {
-                    text: 'Add',
-                    iconCls: 'fa fa-plus',
-                    handler: 'onAddSheet'
-                },
-            ]
-        },
-    ]
-
-});

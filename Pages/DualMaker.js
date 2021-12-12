@@ -1,5 +1,3 @@
-
-
 Ext.define('Pages.DualMakerViewModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.DualMaker',
@@ -12,7 +10,7 @@ Ext.define('Pages.DualMakerViewModel', {
     }
 });
 
-Ext.define('Page.DualMakerController', {
+Ext.define('Pages.DualMakerController', {
     extend: 'Pages.BaseController',
     alias: 'controller.DualMaker',
     init() {
@@ -35,6 +33,13 @@ Ext.define('Page.DualMakerController', {
                 closable: true,
             })
         ));
+        tabs.getActiveTab().getViewModel().setData({
+            rows: [
+              ['A', 'B', 'C', 'D'],
+              ['1', '2', '3', '4'],
+              ['5', '6', '7', '8'],
+            ]
+        })      
         me.getViewModel().setData({
             counter
         });
@@ -63,7 +68,7 @@ Ext.define('Pages.DualMakerMainViewViewModel', {
     }
 });
 
-Ext.define('Page.DualMakerMainViewController', {
+Ext.define('Pages.DualMakerMainViewController', {
     extend: 'Pages.BaseController',
     alias: 'controller.DualMakerMainView',
     init() {
@@ -165,7 +170,6 @@ Ext.define('Page.DualMakerMainViewController', {
         });
     },
 });
-
 
 Ext.define('Pages.DualMaker.MainView', {
     extend: 'Ext.panel.Panel',
