@@ -35,7 +35,7 @@ Ext.application({
     },
     createViewPort() {
         // ロード完了後、ビューポートを作成
-        Ext.create('Ext.Viewport', {
+        const viewPort = Ext.create('Ext.Viewport', {
             renderTo: document.body,
             layout: 'border',
             itemId: 'viewport',
@@ -55,9 +55,14 @@ Ext.application({
                 itemId: 'targetPage',
                 items: [{
                     xtype: 'readme'
-                }
-                ]
+                }]
             }]
+        });
+
+        // IndexedDBを準備
+        window.localdb = new Dexie("CacheDB");
+        window.localdb.version(1).stores({
+            appProperties: "++id,appName,title,properties"
         });
     }
 });

@@ -120,6 +120,8 @@ Ext.define('Page.RegExpCheckerController', {
             targetText: 'ABC\nDEF\n'
         })
         vm.getStore('savedRegexp').load();
+        debugger
+        db = me.getDb()
     },
     /**
      * 画面レンダリング処理後に呼ばれる

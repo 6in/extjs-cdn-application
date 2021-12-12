@@ -7,6 +7,7 @@ Ext.define('Pages.BaseController', {
     init() {
         const me = this
         me.callParent(arguments)
+        me.getDb()
     },
     post(url, data = {}, headers = {}) {
 
@@ -73,5 +74,9 @@ Ext.define('Pages.BaseController', {
     },
     getConst(key) {
         return Object.assign({}, Page.MainMenuController.constYaml[key]);
+    },
+    getDb() {
+        const me = this
+        return window.localdb
     }
 });
