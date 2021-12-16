@@ -7,7 +7,6 @@ Ext.define('Pages.BaseController', {
     init() {
         const me = this
         me.callParent(arguments)
-        me.getDb()
     },
     post(url, data = {}, headers = {}) {
 
@@ -77,6 +76,41 @@ Ext.define('Pages.BaseController', {
     },
     getDb() {
         const me = this
+        // appProperties
+        // appName,title,properties
         return window.localdb
+    },
+    addProperty(appName,title,properties) {
+        const me = this
+        const db = me.getDb()
+        return db.app_properties.add({appName,title,properties})
+    },
+    putProperty(id,appName,title,properties) {
+        const me = this
+        const db = me.getDb()
+        return db.app_properties.put({id,appName,title,properties})
+    },
+    delProperty(id) {
+        return db.app_properties.where("id").equals(id).delete()
+    },
+    getAppProperties(appName,title = "") {
+        const me = this
+        const db = me.getDb()
+
+        let queryObject = { appName }
+        if (title !== "") {
+            queryObject["title"] = title
+        }
+
+        return db.app_properties
+                .where(queryObject)
+                .sortBy("id")
+                .then(rows => {
+                    return rows.map( row => {
+                        Object.assign(
+                            Object.assign({},row.properties),
+                            {id,title})
+                    })
+                })
     }
 });

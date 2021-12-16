@@ -62,7 +62,8 @@ Ext.application({
         // IndexedDBを準備
         window.localdb = new Dexie("CacheDB");
         window.localdb.version(1).stores({
-            appProperties: "++id,appName,title,properties"
+            app_properties: "++id,appName,title,properties",
+            friends: '++id, name, age'
         });
     }
 });
