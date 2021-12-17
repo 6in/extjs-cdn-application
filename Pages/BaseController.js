@@ -80,23 +80,24 @@ Ext.define('Pages.BaseController', {
         // appName,title,properties
         return window.localdb
     },
-    addProperty(appName,title,properties) {
+    async addAppProperty(appName,title,properties) {
         const me = this
         const db = me.getDb()
-        return db.app_properties.add({appName,title,properties})
+        return await db.app_properties.add({appName,title,properties})
     },
-    putProperty(id,appName,title,properties) {
+    async putAppProperty(id,appName,title,properties) {
         const me = this
         const db = me.getDb()
-        return db.app_properties.put({id,appName,title,properties})
+        return await db.app_properties.put({id,appName,title,properties})
     },
-    delProperty(id) {
-        return db.app_properties.where("id").equals(id).delete()
-    },
-    getAppProperties(appName,title = "") {
+    async delAppProperty(id) {
         const me = this
         const db = me.getDb()
-
+        return await db.app_properties.where("id").equals(id).delete()
+    },
+    async getAppProperties(appName,title = "") {
+        const me = this
+        const db = me.getDb()
         let queryObject = { appName }
         if (title !== "") {
             queryObject["title"] = title
@@ -107,9 +108,9 @@ Ext.define('Pages.BaseController', {
                 .sortBy("id")
                 .then(rows => {
                     return rows.map( row => {
-                        Object.assign(
+                        return Object.assign(
                             Object.assign({},row.properties),
-                            {id,title})
+                            {id: row.id, title: row.title})
                     })
                 })
     }

@@ -142,7 +142,7 @@ Ext.define('Pages.TreeMaker.MainView', {
     items: [
         {
             region: 'west',
-            width: 600,
+            width: "50%",
             title: '入力データ',
             layout: 'fit',
             split: true,
