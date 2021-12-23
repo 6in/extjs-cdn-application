@@ -147,6 +147,17 @@ Ext.define('Pages.DualMakerMainViewController', {
                 sql += head.map(h => `${dq}${h}${dq}`).join('\n,   ');
                 sql += '\nfrom\n    sample\nwhere 1=1';
                 break;
+            case 'typeUpsert':
+                sql += "insert into XXXX (" + head.join(',') + ") \n";
+                sql += 'with sample as (\n';
+                sql += newRows.map(row => "    " + row).join('\n');
+                sql += "\n)\nselect\n    ";
+                sql += head.map(h => `${dq}${h}${dq}`).join('\n,   ');
+                sql += '\nfrom\n    sample\nwhere 1=1\n';
+                sql += "on conflict on constraint 制約名\n";
+                sql += "do update set\n";
+                sql += " " + head.map( h => `  "${h}" = excluded."${h}"` ).join("\n,")
+                break;
             case 'typeCreate':
                 const now = Ext.Date.format(new Date(), 'Ymd_His')
                 sql += `create table tmp_${now} as \n`;
@@ -258,6 +269,10 @@ Ext.define('Pages.DualMaker.MainView', {
                         {
                             text: 'Insert',
                             value: 'typeInsert'
+                        },
+                        {
+                            text: 'Upsert',
+                            value: 'typeUpsert'
                         },
                         {
                             text: 'Create Table',
