@@ -96,32 +96,40 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-table',
                                 leaf: true
                             },
+                            {
+                                name: '表示位置さん',
+                                page: 'Pages.TextPos',
+                                description: '何文字目？',
+                                iconCls: 'fa fa-table',
+                                leaf: true
+                            },
                         ]
                     }
                     , {
                         name: 'サンプル',
                         expanded: true,
                         children: [
+                            // {
+                            //     name: 'Template',
+                            //     page: 'Pages.Template',
+                            //     description: 'ページテンプレート',
+                            //     // (font-awesome) https://fontawesome.com/icons?d=gallery
+                            //     iconCls: 'fa fa-cat',
+                            //     leaf: true
+                            // }, {
+                            //     name: 'Monaco',
+                            //     page: 'Pages.MonacoSample',
+                            //     description: 'Monacoエディタサンプル',
+                            //     iconCls: 'fa fa-anchor',
+                            //     leaf: true
+                            // }, {
+                            //     name: 'Sample',
+                            //     page: 'Pages.ComponentSample',
+                            //     description: 'サンプル',
+                            //     iconCls: 'fa fa-ambulance',
+                            //     leaf: true
+                            // }, 
                             {
-                                name: 'Template',
-                                page: 'Pages.Template',
-                                description: 'ページテンプレート',
-                                // (font-awesome) https://fontawesome.com/icons?d=gallery
-                                iconCls: 'fa fa-cat',
-                                leaf: true
-                            }, {
-                                name: 'Monaco',
-                                page: 'Pages.MonacoSample',
-                                description: 'Monacoエディタサンプル',
-                                iconCls: 'fa fa-anchor',
-                                leaf: true
-                            }, {
-                                name: 'Sample',
-                                page: 'Pages.ComponentSample',
-                                description: 'サンプル',
-                                iconCls: 'fa fa-ambulance',
-                                leaf: true
-                            }, {
                                 name: 'FontAwesome',
                                 page: 'https://fontawesome.com/v5.15/icons?d=gallery',
                                 iconCls: 'fa fa-link',
