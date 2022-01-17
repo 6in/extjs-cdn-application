@@ -100,7 +100,7 @@ Ext.define('Pages.MainMenuViewModel', {
                                 name: '表示位置さん',
                                 page: 'Pages.TextPos',
                                 description: '何文字目？',
-                                iconCls: 'fa fa-table',
+                                iconCls: 'fa fa-angry',
                                 leaf: true
                             },
                         ]
