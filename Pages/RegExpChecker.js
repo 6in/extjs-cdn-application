@@ -3,7 +3,10 @@ Ext.define("RegexpUtil", {
         expandMacro: function (keyword) {
             var e, error, i, j, key, keys, len, len1, line, lines, reComnt, reMacro, reg, regMap, repOrderKey, source, test, val;
             if (!keyword) {
-                return;
+                return {
+                    keyword: "",
+                    error: ""
+                };
             }
             keyword = keyword.replace(/\?<\w+>/g, "");
             lines = keyword.split("\n");
@@ -71,6 +74,14 @@ Ext.define("RegexpUtil", {
     }
 });
 
+function spc(len) {
+    const results = []
+    for(let i = 0 ; i < len ; i++) {
+        results.push(" ")
+    }
+    return results.join("")
+}
+
 Ext.define('Pages.RegExpCheckerViewModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.RegExpChecker',
@@ -116,7 +127,7 @@ Ext.define('Page.RegExpCheckerController', {
         me.lastDecorations = []
         vm = me.getViewModel()
         vm.setData({
-            regexpText: '#def abc ABC\n#def def DEF\n#def ~ \\s+\n\n(abc | def)(abc | def)?',
+            regexpText: '#def abc ABC\n#def def DEF\n#def ~ \\s+\n\n(abc | def)',
             targetText: 'ABCDEF\nDEF\n'
         })
         vm.getStore('savedRegexp').load();
@@ -132,9 +143,7 @@ Ext.define('Page.RegExpCheckerController', {
     },
     onChangeRegexpText(obj, val) {
         const me = this;
-
         me.delay(100, me.onChangeRegexpTextImpl)
-
     },
     onChangeRegexpTextImpl(me) {
         const vm = me.getViewModel();
@@ -142,7 +151,7 @@ Ext.define('Page.RegExpCheckerController', {
         let regPattern = null;
 
         if (!data.regexpText.trim()) {
-            return;
+            data.regexpText = "";
         }
 
         // パターンを生成
@@ -164,22 +173,35 @@ Ext.define('Page.RegExpCheckerController', {
         matchGroups.push(row);
         const lines = data.targetText.split(/\r?\n/);
         // パターンコンパイル
-        pattern = new RegExp(parseResult.keyword, "g");
+        pattern = new RegExp(parseResult.keyword);
         const deltaDecorations = []
         lines.forEach((line, lineNo) => {
             if (line.trim() == '') {
                 return;
             }
-            let maxLoop = 100;
             const matchGroup = [lineNo + 1];
+
+            const regArray = pattern.exec(line)
+            if (regArray != null) {
+                for ( let i = 0 ; i < regArray.length ; i++) {
+                    matchGroup.push(regArray[i])
+                }
+                if (matchGroup.length > 1) {
+                    matchGroups.push(matchGroup);
+                }
+            }
+            let maxLoop = 100;
+            let lineWork = line
             while (--maxLoop >= 0) {
-                regArray = pattern.exec(line)
-                if (regArray === null) {
+                let result = lineWork.match(pattern)
+                result = lineWork.match(pattern)
+                if (result === null) {
                     // return;
                     break;
                 }
-                const bgn = regArray.index;
-                const end = bgn + regArray[0].length;
+                const bgn = result.index;
+                const end = bgn + result[0].length;
+                lineWork = lineWork.replace(pattern,spc(result[0].length))
 
                 deltaDecorations.push(
                     {
@@ -187,20 +209,11 @@ Ext.define('Page.RegExpCheckerController', {
                         options: { inlineClassName: 'myLineDecoration' }
                     },
                 );
-                //matchGroup.push(RegExp.$1)
-                for ( let i = 0 ; i < regArray.length ; i++) {
-                    matchGroup.push(regArray[i])
-                }
             }
-            if (matchGroup.length > 0) {
-                matchGroups.push(matchGroup);
-            }
-
         })
 
         // マーカー設定するエディタ
         const editor = me.lookupReference('targetText').monaco()
-
         me.lastDecorations = editor.deltaDecorations(me.lastDecorations, deltaDecorations);
 
         updateData = {
