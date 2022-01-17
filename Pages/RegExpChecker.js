@@ -116,11 +116,10 @@ Ext.define('Page.RegExpCheckerController', {
         me.lastDecorations = []
         vm = me.getViewModel()
         vm.setData({
-            regexpText: '#def abc (ABC)\n#def def (DEF)\n#def ~ \\s+\n\n(abc | def)',
-            targetText: 'ABC\nDEF\n'
+            regexpText: '#def abc ABC\n#def def DEF\n#def ~ \\s+\n\n(abc | def)(abc | def)?',
+            targetText: 'ABCDEF\nDEF\n'
         })
         vm.getStore('savedRegexp').load();
-        debugger
         db = me.getDb()
     },
     /**
@@ -188,7 +187,10 @@ Ext.define('Page.RegExpCheckerController', {
                         options: { inlineClassName: 'myLineDecoration' }
                     },
                 );
-                matchGroup.push(line.slice(bgn, end))
+                //matchGroup.push(RegExp.$1)
+                for ( let i = 0 ; i < regArray.length ; i++) {
+                    matchGroup.push(regArray[i])
+                }
             }
             if (matchGroup.length > 0) {
                 matchGroups.push(matchGroup);
