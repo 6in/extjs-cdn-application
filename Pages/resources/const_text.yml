@@ -86,6 +86,9 @@ ReplaceText:
   modified: ''
   iframeScript: |
     console.log("script installed")
+    function convert() {
+      
+    }
 
     function removeScript() {
       const oldScript = document.querySelector("#script-runtime")
@@ -93,6 +96,7 @@ ReplaceText:
         console.log('remove old script')
         oldScript.parentNode.removeChild(oldScript)
       }
+      convert = null
     }
 
     function addScript(scriptText) {
@@ -105,7 +109,7 @@ ReplaceText:
 
     window.addEventListener('message', event => {
       const mainWindow = event.source;
-      let result;
+      let result = "";
       try {
         // 以前のScriptタグの消去
         removeScript()
@@ -114,12 +118,14 @@ ReplaceText:
         addScript(event.data.script)
 
         // 変換実行
-        result =  convert(event.data.text)
+        if (convert) {
+          result =  convert(event.data.text)
+        }
 
         // 結果を送信
         mainWindow.postMessage(result, event.origin);
       } catch (err) {
         // 結果を送信
-        mainWindow.postMessage(err, event.origin);
+        mainWindow.postMessage(err.message, event.origin);
       }
     });

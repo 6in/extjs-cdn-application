@@ -31,7 +31,9 @@ Ext.define('Pages.ReplaceTextController', {
 
     window.addEventListener('message', event => {
       // スクリプト実行結果を表示
-      vm.setData({modified: event.data})
+      me.getView().down("monacodiff").editor.getModifiedEditor().setValue(
+        event.data
+      )
     });
 
     // https://gist.github.com/jamesmcallister/c3fd8aaf0ff43942f83464da719cbcec
@@ -64,6 +66,9 @@ Ext.define('Pages.ReplaceTextController', {
       text: original
     }
     vm.setData({original})
+    me.getView().down("monacodiff").editor.getModifiedEditor().setValue(
+      ""
+    )
     iframe.contentWindow.postMessage(param, '*')
   }
 });
