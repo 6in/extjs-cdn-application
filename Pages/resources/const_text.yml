@@ -129,3 +129,11 @@ ReplaceText:
         mainWindow.postMessage(err.message, event.origin);
       }
     });
+KataKanaConvert:
+  inputText: |
+    ABCDEFG
+    abcdefg
+    ＡＢＣＤＥＦＧ
+    ａｂｃｄｅｆｇ
+    あいうえお
+    カキクケコ
