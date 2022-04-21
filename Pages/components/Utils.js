@@ -560,16 +560,11 @@ Ext.define("AnyConvert", {
         }
         if (word.match(AnyConvert.reg_CamelCase)) {
             me.srcType = "CamelCase";
-            me.tokens = word.slice(1).split(/([A-Z][a-z0-9]+)/).filter(function (t) {
-                return t !== "";
-            });
-            me.tokens[0] = word[0] + me.tokens[0];
+            me.tokens = me.parseCamelToken(word)
         }
         if (word.match(AnyConvert.reg_camelCase)) {
             me.srcType = "camelCase";
-            me.tokens = word.split(/([A-Z][a-z0-9]+)/).filter(function (t) {
-                return t !== "";
-            });
+            me.tokens = me.parseCamelToken(word);
         }
         if (word.match(AnyConvert.reg_TRAIN_CASE)) {
             me.srcType = "TRAIN-CASE";
@@ -596,6 +591,28 @@ Ext.define("AnyConvert", {
         me.Lowers = me.tokens.map(function (token) {
             return token.toLowerCase();
         });
+    },
+    parseCamelToken(word) {
+        var words = []
+        var tokens = []
+        word.split(/([A-Z])/)
+            .filter(w => w)
+            .forEach(w => {
+                debugger
+                if (w.match(/[A-Z]/)) {
+                    const ww = words.join("")
+                    if (ww) {
+                        tokens.push(ww)
+                    }
+                    words = []
+                }
+                words.push(w)
+            })
+        const ww = words.join("")
+        if (ww) {
+            tokens.push(ww)
+        }
+        return tokens
     },
     getRow: function () {
         var me;
