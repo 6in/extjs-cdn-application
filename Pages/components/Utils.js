@@ -598,7 +598,6 @@ Ext.define("AnyConvert", {
         word.split(/([A-Z])/)
             .filter(w => w)
             .forEach(w => {
-                debugger
                 if (w.match(/[A-Z]/)) {
                     const ww = words.join("")
                     if (ww) {

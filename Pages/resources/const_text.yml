@@ -21,7 +21,7 @@ CaseFormatMaker:
   inputText: |
     SNAKE_CASE_1  # コメント1
     snake_case_2  // コメント2
-      CamelCase_3 -- コメント3
+      CamelCase3 -- コメント3
       camelCase4,  # カンマ、スペースは除去
         TRAIN-CASE-5
         train-case-6
@@ -32,6 +32,8 @@ CaseFormatMaker:
     MNO-PQR
     Stu
     VWXYZ
+    CCamelCase
+    cCamelCCase
 GenericTemplate:
   txtSimple: "Simple,{LINE_NO},{COL_1},{COL_2},{COL_3},{COL_4}"
   txtUnderscore: |
