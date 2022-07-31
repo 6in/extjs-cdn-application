@@ -88,7 +88,7 @@ Ext.define('Pages.MainMenuViewModel', {
                                 description: '半角全角かな変換',
                                 iconCls: 'fa fa-language',
                                 leaf: true
-                            },                            
+                            },
                             {
                                 name: 'Yaml⇔Json変換さん',
                                 page: 'Pages.YamlJsonConverter',
@@ -107,6 +107,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 name: '表示位置さん',
                                 page: 'Pages.TextPos',
                                 description: '何文字目？',
+                                iconCls: 'fa fa-angry',
+                                leaf: true
+                            },
+                            {
+                                name: '簡易DBさん',
+                                page: 'Pages.TinySql',
+                                description: '簡易的なDBでデータ処理できます。',
                                 iconCls: 'fa fa-angry',
                                 leaf: true
                             },
@@ -154,7 +161,7 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fa fa-link',
                                 description: 'ExtJS API Document',
                                 other: true,
-                                leaf: true                                
+                                leaf: true
                             }
                         ]
                     }]
@@ -206,13 +213,13 @@ Ext.define('Page.MainMenuController', {
         if (existsPanel.length === 0) {
             if (page.startsWith("https")) {
                 if (menu.data.other) {
-                    window.open(page,name)
+                    window.open(page, name)
                 } else {
                     const newPanel = tabPanel.add({
                         title: name,
                         layout: 'fit',
                         closable: true,
-                        iconCls: menu.data.iconCls,                        
+                        iconCls: menu.data.iconCls,
                         items: {
                             xtype: 'iframe',
                             itemId: 'iframe',
@@ -223,7 +230,7 @@ Ext.define('Page.MainMenuController', {
                     tabPanel.setActiveTab(newPanel);
                     me.delay(100, () => {
                         newPanel.down("#iframe").iframe.src = page
-                    })    
+                    })
                 }
             } else {
                 // ページのロード完了後に表示

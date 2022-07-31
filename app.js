@@ -65,5 +65,12 @@ Ext.application({
             app_properties: "++id,appName,title,properties",
             friends: '++id, name, age'
         });
+
+        initSqlJs({}).then(function (SQL) {
+            console.log("sqlite try init")
+            window.sqlitedb = new SQL.Database();
+            window.sqlitedb.exec("select 1;")
+            console.log("sqlite try success")
+        });
     }
 });
