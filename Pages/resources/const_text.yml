@@ -143,7 +143,7 @@ TinySql:
   readme: |
     - sqliteのJS実装であるsql.jsを利用して、シートからテーブルを生成しSELECTを発行した結果を表示できます。
     - テーブル名は１列目、続く行にカラム一覧を記述してください。
-    - カラム名にサフィックスをつけると、データ型を指定できます
+    - カラム名にサフィックスをつけると、データ型を指定できます。
       - :i 数値型
       - :r 浮動小数点数
       - :b BLOB型
@@ -151,6 +151,7 @@ TinySql:
     - データ行はカラム名と同じ列数で記述してください。
     - テーブルとテーブルの間には空行を１行以上開けてください。
     - SQLを編集し、実行ボタンをクリックするとSQLが実行されます。
+    - SELECT文は、;区切りで複数記述でき、それぞれのSQL毎に出力結果が表示されます。
   txtSql: |
     select 
       ta.col1 + tb.col1 as col1
@@ -162,6 +163,14 @@ TinySql:
       ta.col1 = tb.col1
     order by 
       ta.col1
+    ;
+    select CURRENT_TIMESTAMP as dt
+    union all
+    select date(CURRENT_TIMESTAMP) as dt
+    union all
+    SELECT strftime('%Y年%m月%d日', 'now') as dt
+    ;
+    
   rows:
     - 
       - tablea

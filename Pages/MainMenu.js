@@ -114,7 +114,7 @@ Ext.define('Pages.MainMenuViewModel', {
                                 name: '簡易DBさん',
                                 page: 'Pages.TinySql',
                                 description: '簡易的なDBでデータ処理できます。',
-                                iconCls: 'fa fa-angry',
+                                iconCls: 'fas fa-database',
                                 leaf: true
                             },
                         ]

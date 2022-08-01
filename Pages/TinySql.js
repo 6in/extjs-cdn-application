@@ -117,6 +117,9 @@ Ext.define('Pages.TinySqlController', {
     try {
       // テーブル情報を解析
       tables = me.getTables(data.rows)
+      vm.setData({
+        outputText: tables.map(table => table.initSql.join('\n')).join('\n')
+      })
 
       results = window.sqlitedb.exec(data.txtSql)
       while (tabs.items.items.length != 1) {
@@ -125,13 +128,14 @@ Ext.define('Pages.TinySqlController', {
       console.log(JSON.stringify(results, null, 2))
 
       results.forEach((result, index) => {
-        const rowData = [result.columns].concat(result.values)
+        const rowData = result.values
         const tab = tabs.add({
           title: `result${index + 1}`,
           closable: true,
           layout: 'fit',
           items: {
             xtype: 'handson-table',
+            colHeaders: result.columns,
             data: rowData
           }
         })
@@ -217,7 +221,7 @@ Ext.define('Pages.TinySqlController', {
       table.initSql = [
         `drop table if exists ${table.name};`,
         `create table ${table.name} (${colType});`,
-        `insert into ${table.name}(${colList}) values(${valList})`
+        `insert into ${table.name}(${colList}) values(${valList});`
       ]
       window.sqlitedb.exec(table.initSql[0])
       window.sqlitedb.exec(table.initSql[1])
@@ -231,7 +235,6 @@ Ext.define('Pages.TinySqlController', {
         window.sqlitedb.run(table.initSql[2], row)
       })
     })
-
     return tables
   },
   onTabChange: function (obj, newTab) {
@@ -275,7 +278,7 @@ Ext.define('Pages.TinySql', {
   items: [
     {
       region: 'west',
-      title: 'データを貼り付けて、生成ボタンをクリックして下さい',
+      title: '表データを貼り付けて下さい',
       width: 400,
       split: true,
       layout: 'fit',
