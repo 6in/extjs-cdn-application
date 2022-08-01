@@ -22,11 +22,7 @@ Ext.define('Pages.TinySqlViewModel', {
     txtUnderscore: '',
     txtJavascript: '',
     hasHeader: 1,
-    rows: [
-      ['COL_1', 'COL_2', 'COL_3', 'COL_4'],
-      ['1', '2', '3', '4'],
-      ['5', '6', '7', '8'],
-    ],
+    rows: [],
     readme: ''
   }
 });
@@ -42,7 +38,6 @@ Ext.define('Pages.TinySqlController', {
     data = vm.getData();
 
     me.delay(100, () => {
-      console.log("const=>", me.getConst('TinySql'));
       me.getViewModel().setData(
         me.getConst('TinySql')
       );
@@ -119,16 +114,15 @@ Ext.define('Pages.TinySqlController', {
     const vm = me.getViewModel()
     const data = vm.getData()
     const tabs = me.lookupReference('tabpanel')
-
     try {
       // テーブル情報を解析
       tables = me.getTables(data.rows)
 
       results = window.sqlitedb.exec(data.txtSql)
-      console.log(JSON.stringify(results, null, 2))
       while (tabs.items.items.length != 1) {
         tabs.remove(1)
       }
+      console.log(JSON.stringify(results, null, 2))
 
       results.forEach((result, index) => {
         const rowData = [result.columns].concat(result.values)
@@ -148,17 +142,18 @@ Ext.define('Pages.TinySqlController', {
       Ext.Msg.alert('エラー', e, Ext.emptyFn);
     }
   },
-  getTables: (rows) => {
+  getTables: function (rows) {
+    const me = this
     const tables = []
     let table = {
       state: '',
       name: '',
       cols: [],
+      types: [],
       rows: []
     }
     let lastLineIsEmpty = true
     rows.forEach((row, i) => {
-      console.log(JSON.stringify(row, null, 2))
       const isEmptyLine = row.reduce((a, b) => {
         if (a === null) {
           a = ''
@@ -178,13 +173,33 @@ Ext.define('Pages.TinySqlController', {
         table.name = row[0]
         table.cols = []
         table.rows = []
+        table.types = []
         lastLineIsEmpty = false
         tables.push(table)
         return
       }
       if (table.state === 'table captured') {
         table.state = 'column captured'
-        table.cols = row.filter(col => col)
+        const cols = row.filter(col => col).map(col => {
+          [colName, type] = col.split(":")
+          switch (type) {
+            case 'i':
+              type = 'integer'
+              break
+            case 'r':
+              type = 'real'
+              break
+            case 'b':
+              type = 'blob'
+              break
+            default:
+              type = 'text'
+          }
+          return [colName, type]
+        })
+
+        table.cols = cols.map(col => col[0])
+        table.types = cols.map(col => col[1])
         lastLineIsEmpty = false
         return
       }
@@ -194,18 +209,25 @@ Ext.define('Pages.TinySqlController', {
         return
       }
     })
-
+    const emptyIsNull = me.lookupReference('emptyIsNull').value
     tables.forEach(table => {
+      const colType = table.cols.filter(col => col).map((col, idx) => `${col} ${table.types[idx]}`).join(",")
       const colList = table.cols.filter(col => col).join(",")
-      const valList = table.cols.filter(col => col).map(s => "?").join(",")
+      const valList = table.cols.map(s => "?").join(",")
       table.initSql = [
         `drop table if exists ${table.name};`,
-        `create table ${table.name} (${colList});`,
+        `create table ${table.name} (${colType});`,
         `insert into ${table.name}(${colList}) values(${valList})`
       ]
       window.sqlitedb.exec(table.initSql[0])
       window.sqlitedb.exec(table.initSql[1])
       table.rows.forEach(row => {
+        row = row.map(col => {
+          if (emptyIsNull && !col) {
+            col = null
+          }
+          return col
+        })
         window.sqlitedb.run(table.initSql[2], row)
       })
     })
@@ -242,20 +264,6 @@ Ext.define('Pages.TinySql', {
   },
   tbar: [
     {
-      xtype: 'checkbox',
-      boxLabel: 'すべて文字列とする',
-      labelWidth: 130,
-      reference: 'allText',
-      value: true,
-      visible: false
-    }, {
-      xtype: 'checkbox',
-      boxLabel: '行番号を付与',
-      labelWidth: 130,
-      reference: 'addLineNo',
-      value: true,
-      // disabled: true
-    }, {
       xtype: 'checkbox',
       boxLabel: '空白をNULLにする',
       labelWidth: 130,
