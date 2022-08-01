@@ -126,16 +126,24 @@ Ext.define('Pages.TinySqlController', {
         tabs.remove(1)
       }
       console.log(JSON.stringify(results, null, 2))
+      const outputColumn = me.lookupReference('outputColumn').value
 
       results.forEach((result, index) => {
-        const rowData = result.values
+        let cols = true
+        let rowData = result.values
+        if (outputColumn) {
+          rowData = [result.columns].concat(rowData)
+        } else {
+          cols = result.columns
+        }
+
         const tab = tabs.add({
           title: `result${index + 1}`,
           closable: true,
           layout: 'fit',
           items: {
             xtype: 'handson-table',
-            colHeaders: result.columns,
+            colHeaders: cols,
             data: rowData
           }
         })
@@ -271,8 +279,14 @@ Ext.define('Pages.TinySql', {
       boxLabel: '空白をNULLにする',
       labelWidth: 130,
       reference: 'emptyIsNull',
-      value: true,
-      visble: false
+      value: true
+    },
+    {
+      xtype: 'checkbox',
+      boxLabel: '結果にカラム名を出力する',
+      labelWidth: 130,
+      reference: 'outputColumn',
+      value: false
     }
   ],
   items: [
@@ -347,7 +361,7 @@ Ext.define('Pages.TinySql', {
           buttonAlign: 'left'
         }, {
           region: 'south',
-
+          title: '結果',
           height: 300,
           layout: 'fit',
           split: true,
