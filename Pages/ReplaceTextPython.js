@@ -84,7 +84,7 @@ Ext.define('Pages.ReplaceTextPython', {
   items: [
     {
       region: 'north',
-      title: '置換処理(JavaScript)',
+      title: '置換処理(Python)',
       height: 300,
       split: true,
       collapsible: true,
