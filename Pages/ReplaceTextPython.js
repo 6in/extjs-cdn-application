@@ -1,18 +1,18 @@
-Ext.define('Pages.ReplaceTextViewModel', {
+Ext.define('Pages.ReplaceTextPythonViewModel', {
   extend: 'Ext.app.ViewModel',
-  alias: 'viewmodel.ReplaceText',
+  alias: 'viewmodel.ReplaceTextPython',
   reference: 'viewmodel',
   data: {
-    title: '置換さん',
+    title: '置換さんP',
     inputText: '',
     original: '',
     modified: ''
   }
 });
 
-Ext.define('Pages.ReplaceTextController', {
+Ext.define('Pages.ReplaceTextPythonController', {
   extend: 'Pages.BaseController',
-  alias: 'controller.ReplaceText',
+  alias: 'controller.ReplaceTextPython',
   init: function () {
     var data, json, me, vm;
     me = this;
@@ -37,19 +37,19 @@ Ext.define('Pages.ReplaceTextController', {
     });
 
     // https://gist.github.com/jamesmcallister/c3fd8aaf0ff43942f83464da719cbcec
-    const scriptBox = me.lookupReference('scriptBox')
-    const script = document.createElement("script")
-    script.type = "text/javascript";
-    script.innerHTML = me.getConst("ReplaceText").iframeScript
-    scriptBox.iframe.contentWindow.document.body.appendChild(script)
+    // const scriptBox = me.lookupReference('scriptBox')
+    // const script = document.createElement("script")
+    // script.type = "text/javascript";
+    // script.innerHTML = me.getConst("ReplaceTextPython").iframeScript
+    // scriptBox.iframe.contentWindow.document.body.appendChild(script)
   },
   onClear: function () {
-    var data, m, me, ReplaceText, vm;
+    var data, m, me, ReplaceTextPython, vm;
     me = this;
     vm = me.getViewModel();
     data = vm.getData();
     try {
-      vm.setData(me.getConst('ReplaceText'))
+      vm.setData(me.getConst('ReplaceTextPython'))
     } catch (_error) { }
   },
   onReplace: function (obj) {
@@ -73,11 +73,11 @@ Ext.define('Pages.ReplaceTextController', {
   }
 });
 
-Ext.define('Pages.ReplaceText', {
+Ext.define('Pages.ReplaceTextPython', {
   extend: 'Ext.panel.Panel',
   layout: 'border',
-  controller: 'ReplaceText',
-  viewModel: 'ReplaceText',
+  controller: 'ReplaceTextPython',
+  viewModel: 'ReplaceTextPython',
   bind: {
     title: '{title}'
   },
@@ -95,7 +95,7 @@ Ext.define('Pages.ReplaceText', {
         {
           xtype: 'monaco',
           options: {
-            language: 'javascript',
+            language: 'python',
             minimap: {
               enabled: true
             },
@@ -137,12 +137,22 @@ Ext.define('Pages.ReplaceText', {
           modified: '{modified}'
         }
       },
-      {
-        xtype: 'iframe',
-        reference: 'scriptBox',
-        visible: false,
-      }
       ],
+    },
+    {
+      region: 'south',
+      height: 100,
+      layout: 'fit',
+      title: 'python',
+      split: true,
+      items: [
+        {
+          xtype: 'iframe',
+          reference: 'scriptBox',
+          src: './python.html',
+          width: 'flex'
+        }
+      ]
     }
   ],
   listeners: {

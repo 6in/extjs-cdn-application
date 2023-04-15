@@ -131,6 +131,36 @@ ReplaceText:
         mainWindow.postMessage(err.message, event.origin);
       }
     });
+
+ReplaceTextPython:
+  inputText: |
+    # 変換処理を記述してください
+    def convert(text):
+      text = text.replace("テキスト","文字列")
+      text = text.replace("貼り付け","ペーストし")
+      return text
+  original: |
+    ここに変換前のテキストを貼り付けてください。
+    ここに変換前のテキストを貼り付けてください。
+    ここに変換前のテキストを貼り付けてください。
+
+    スクリプトで利用できるモジュールは、以下のものです。
+
+    import sys
+    import os
+    import re
+    import yaml
+    import json
+    from datetime import datetime
+    import pandas as pd
+    import requests
+    import pyodide_http
+    import sqlite3 as sql
+
+  modified: ''
+  iframeScript: |
+    console.log("script installed")
+
 KataKanaConvert:
   inputText: |
     ABCDEFG

@@ -31,7 +31,9 @@ Ext.define('Pages.components.Iframe', {
             const id = `${this.getId()}_component`;
             const elm = document.getElementById(id);
             me.iframe = elm;
-            // me.iframe.src = me.config.src;
+            if (me.config.src) {
+                me.iframe.src = me.config.src;
+            }
         }
     },
 

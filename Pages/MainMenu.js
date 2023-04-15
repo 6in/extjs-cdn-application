@@ -83,6 +83,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 leaf: true
                             },
                             {
+                                name: '置換さんP',
+                                page: 'Pages.ReplaceTextPython',
+                                description: 'Pythonでテキストを置換します',
+                                iconCls: 'fa fa-scroll',
+                                leaf: true
+                            },
+                            {
                                 name: 'かたカナさん',
                                 page: 'Pages.KataKanaConvert',
                                 description: '半角全角かな変換',
