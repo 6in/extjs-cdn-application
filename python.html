@@ -55,8 +55,8 @@
             try:
                 exec( script + "\nresult = convert(input)\n", globals(), g)
             except Exception as e:
-                result = "例外args:" + e.args
-                return g["result"]
+                g["result"] = "例外args:\n" + e.args
+            return g["result"]
 
         display("python ready")
 
