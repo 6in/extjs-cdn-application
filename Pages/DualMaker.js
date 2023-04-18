@@ -36,8 +36,8 @@ Ext.define('Pages.DualMakerController', {
         tabs.getActiveTab().getViewModel().setData({
             rows: [
               ['A', 'B', 'C', 'D'],
-              ['1', '2', '3', '4'],
-              ['5', '6', '7', '8'],
+              ['1', '2', '3', 'abc'],
+              ['5', '6', '7', "'def'"],
             ]
         })      
         me.getViewModel().setData({
@@ -96,7 +96,7 @@ Ext.define('Pages.DualMakerMainViewController', {
         // Dual表生成タイプから
         const newRows = rows.map((newRow, i) => {
             const cols = head.map((colName, j) => {
-                const val = newRow[j];
+                const val = newRow[j].replace(/'/g,"''");
                 const isNull = val.toLowerCase() === 'null'
 
                 if (isNull) {
@@ -108,7 +108,7 @@ Ext.define('Pages.DualMakerMainViewController', {
                     return ret;
                 }
 
-                if (newRow[j].match(/\d+/)) {
+                if (newRow[j].match(/^\d+$/)) {
                     return `${newRow[j]} as ${dq}${colName}${dq}`;
                 } else {
                     return ret;
