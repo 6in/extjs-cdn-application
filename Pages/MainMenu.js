@@ -251,6 +251,7 @@ Ext.define('Page.MainMenuController', {
                         newPanel.getController().getViewModel().setData({
                             appName: page
                         })
+                        newPanel.appPageName = page
                         tabPanel.setActiveTab(newPanel);
                     } catch (e) {
                         console.log(e.message);

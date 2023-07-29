@@ -55,7 +55,18 @@ Ext.application({
                 itemId: 'targetPage',
                 items: [{
                     xtype: 'readme'
-                }]
+                }],
+                listeners: {
+                    tabchange(obj, newTab) {
+                        if (newTab.appPageName) {
+                            let name = newTab.appPageName.split(".")[1]
+                            const url = new URL(window.location);
+                            url.searchParams.set('page', name);
+                            window.history.pushState({}, '', url);
+                        }
+                    }
+                }
+
             }]
         });
 

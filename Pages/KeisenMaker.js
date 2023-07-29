@@ -29,7 +29,7 @@ Ext.define('Pages.KeisenMakerController', {
         console.log(me.constYaml);
 
         let counter = me.getViewModel().getData().counter
-        const newTab = Ext.create("Pages.KeisenMakerMainView",{
+        const newTab = Ext.create("Pages.KeisenMakerMainView", {
             title: `シート-${counter++}`,
             closable: true,
         })
@@ -115,6 +115,7 @@ Ext.define('Pages.KeisenMakerMainViewController', {
             });
             rows = d.rows;
         }
+
         // 罫線生成タイプから、生成用クラスの作成
         keisenObj = Ext.create("KeisenUtil." + d.keisenType, {
             controller: me

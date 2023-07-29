@@ -55,7 +55,6 @@ Ext.define('Page.TextPosController', {
 //script:この行は消さないで下さい
 function addPoint(text, errorPos, splitChar) {
     const splitCharLen = splitChar.length
-
     const lines = text.split(splitChar)
     // 各行の長さを取得
     const lineLengths = lines.map(l => l.length + splitCharLen)
@@ -110,7 +109,7 @@ Ext.define('Pages.TextPos.DiffPanel', {
                     text: 'CR/LF'
                 }],
                 listeners: {
-                    toggle(container,button,pressed) {
+                    toggle(container, button, pressed) {
                         const panel = this.up("panel")
                         if (pressed) {
                             panel.crlf = "\n"

@@ -13,7 +13,7 @@ Ext.define("KeisenUtil.Json", {
       ret.text = JSON.stringify(data, null, 2);
     } catch (_error) {
       e = _error;
-      console.log(e);
+      Ext.toast(e.message, '', "tr");
       ret.error = e.toString();
     }
     return ret;
@@ -55,7 +55,7 @@ Ext.define("KeisenUtil.Json2", {
       ret.text = JSON.stringify(rows, null, 2);
     } catch (_error) {
       e = _error;
-      console.log(e);
+      Ext.toast(e.message, '', "tr");
       ret.error = e.toString();
     }
     return ret;
@@ -81,6 +81,63 @@ Ext.define("KeisenUtil.Json2", {
   },
 });
 
+Ext.define("KeisenUtil.JsonL", {
+  extend: "KeisenUtil.Base",
+  dataToText: function (data) {
+    var alignRight, cols, e, me, result, ret, rows;
+    me = this;
+    ret = {
+      text: "",
+      error: "",
+    };
+    cols = data.cols;
+    rows = data.rows;
+    try {
+      rows = rows.map((row) => {
+        const newRow = {};
+        row.forEach((col, idx) => {
+          newRow[cols[idx]] = col;
+        });
+        return JSON.stringify(newRow);
+      });
+      ret.text = rows.join('\n');
+    } catch (_error) {
+      e = _error;
+      Ext.toast(e.message, '', "tr");
+      ret.error = e.toString();
+    }
+    return ret;
+  },
+  textToData: function (text) {
+    var ret;
+    ret = {
+      rows: [],
+    };
+    try {
+      let cols = null
+      const rows = text.split('\n')
+        .filter(line => { return line.trim() != '' })
+        .map(line => {
+          row = JSON.parse(line)
+          if (cols == null) {
+            cols = Object.keys(row)
+          }
+          return cols.map(col => {
+            return row[col]
+          })
+        })
+      if (rows.length > 0) {
+        rows.unshift(cols);
+        ret.rows = rows
+      }
+    } catch (e) {
+      Ext.toast(e.message, '', "tr");
+    }
+    return ret.rows;
+  },
+});
+
+
 Ext.define("KeisenUtil.Yaml", {
   extend: "KeisenUtil.Base",
   dataToText: function (data) {
@@ -100,10 +157,10 @@ Ext.define("KeisenUtil.Yaml", {
         });
         return newRow;
       });
-      ret.text = jsyaml.dump({rows});
+      ret.text = jsyaml.dump(rows);
     } catch (_error) {
       e = _error;
-      console.log(e);
+      Ext.toast(e.message, '', "tr");
       ret.error = e.toString();
     }
     return ret;
@@ -153,7 +210,7 @@ Ext.define("KeisenUtil.Csv", {
       ret.text = result.join("\n");
     } catch (_error) {
       e = _error;
-      console.log(e);
+      Ext.toast(e.message, '', "tr");
       ret.error = e.toString();
     }
     return ret;
@@ -167,10 +224,10 @@ Ext.define("KeisenUtil.Csv", {
     try {
       const spliter = new RegExp(me.getSpliter())
       ret.rows = text.split(/\r?\n/)
-      .filter(row => row !== "")
-      .map(row => {
-        return row.split(spliter)
-      })
+        .filter(row => row !== "")
+        .map(row => {
+          return row.split(spliter)
+        })
     } catch (e) {
       console.log(e.message);
     }
@@ -243,10 +300,12 @@ Ext.define("Pages.TableJsonMainViewViewModel", {
       ["5", "6", "7", "8"],
     ],
     hasHeader: true,
+    isInvertMatrix: false,
     tableType: "Json",
     languages: {
       "Json": "json",
       "Json2": "json",
+      "JsonL": "json",
       "Yaml": "yaml",
       "Csv": "csv",
       "Tsv": "tsv"
@@ -268,16 +327,22 @@ Ext.define("Pages.TableJsonMainViewController", {
     const vm = me.getViewModel();
     const d = me.getViewModel().getData();
     let head = [];
-    let rows = [];
+    let rows = JSON.parse(JSON.stringify(d.rows));
+
+    if (d.isInvertMatrix) {
+      // debugger
+      rows = me.invertMatrix(rows)
+    }
+    console.log(rows)
     // ヘッダー有無に対応
     if (d.hasHeader) {
-      head = d.rows[0];
-      rows = d.rows.slice(1);
+      head = rows[0];
+      rows = rows.slice(1);
     } else {
-      head = d.rows[0].map(function (v, i) {
+      head = rows[0].map(function (v, i) {
         return "COL_" + (i + 1);
       });
-      rows = d.rows;
+      rows = rows;
     }
     // 罫線生成タイプから、生成用クラスの作成
     keisenObj = Ext.create("KeisenUtil." + d.tableType, {
@@ -286,6 +351,9 @@ Ext.define("Pages.TableJsonMainViewController", {
 
     rows = rows.map((row) => {
       return row.map((col) => {
+        if (col === null) {
+          return col
+        }
         col = `${col}`;
         if (col.match(/^[+\-]?\d+(\.\d+)?$/)) {
           col = Number(col);
@@ -311,6 +379,7 @@ Ext.define("Pages.TableJsonMainViewController", {
   onChangeCreateTypeCombo() {
     const me = this;
     me.delay(100, () => {
+      // debugger
       me.onMakeTable();
     });
   },
@@ -327,14 +396,41 @@ Ext.define("Pages.TableJsonMainViewController", {
         });
         rows = keisenObj.textToData(tableText);
         rows = rows.filter((row) => row.length > 0);
+
+        if (d.isInvertMatrix) {
+          // debugger
+          rows = me.invertMatrix(rows)
+        }
+
         vm.setData({ rows });
       } catch (e) {
-        console.log(e);
+        Ext.toast(e.message, '', "tr");
       } finally {
         me.getView().unmask();
       }
     });
   },
+  invertMatrix(rows) {
+    row_length = rows.length
+    col_length = rows[0].length
+
+    const newRows = []
+    for (let col = 0; col < col_length; col++) {
+      const newRow = []
+      for (let row = 0; row < row_length; row++) {
+        newRow.push(rows[row][col])
+      }
+      newRows.push(newRow)
+    }
+    return newRows
+  },
+  onChangeInvertMatrix(obj, value) {
+    const me = this
+    const vm = me.getViewModel()
+    const data = vm.getData()
+    const rows = me.invertMatrix(data.rows)
+    vm.setData({ rows })
+  }
 });
 
 Ext.define("Pages.TableJson.MainView", {
@@ -358,6 +454,16 @@ Ext.define("Pages.TableJson.MainView", {
           bind: {
             value: "{hasHeader}",
           },
+        },
+        {
+          xtype: "checkbox",
+          boxLabel: "行列入れ替え",
+          bind: {
+            value: "{isInvertMatrix}",
+          },
+          listeners: {
+            change: 'onChangeInvertMatrix'
+          }
         },
         "->",
         {
@@ -397,6 +503,10 @@ Ext.define("Pages.TableJson.MainView", {
             {
               text: "Json{}",
               value: "Json2",
+            },
+            {
+              text: "JsonL",
+              value: "JsonL",
             },
             {
               text: "Yaml",
