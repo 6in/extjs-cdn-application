@@ -144,7 +144,9 @@ Ext.define('Pages.ReplaceTextPython', {
       height: 100,
       layout: 'fit',
       title: 'python',
+      reference: 'python',
       split: true,
+      collapsible: true,
       items: [
         {
           xtype: 'iframe',

@@ -279,9 +279,9 @@ Ext.define("Pages.TableJsonController", {
     );
     tabs.getActiveTab().getViewModel().setData({
       rows: [
-        ['A', 'B', 'C', 'D'],
-        ['1', '2', '3', '4'],
-        ['5', '6', '7', '8'],
+        ["A", "B", "C", "D"],
+        ["ABC", 2, 3, 4],
+        ["DEF", 6, 7, 8],
       ]
     })
     me.getViewModel().setData({
@@ -296,8 +296,8 @@ Ext.define("Pages.TableJsonMainViewViewModel", {
   data: {
     rows: [
       ["A", "B", "C", "D"],
-      ["1", "2", "3", "4"],
-      ["5", "6", "7", "8"],
+      ["ABC", 2, 3, 4],
+      ["DEF", 6, 7, 8],
     ],
     hasHeader: true,
     isInvertMatrix: false,
@@ -351,13 +351,13 @@ Ext.define("Pages.TableJsonMainViewController", {
 
     rows = rows.map((row) => {
       return row.map((col) => {
-        if (col === null) {
-          return col
-        }
-        col = `${col}`;
-        if (col.match(/^[+\-]?\d+(\.\d+)?$/)) {
-          col = Number(col);
-        }
+        // if (col === null) {
+        //   return col
+        // }
+        // col = `${col}`;
+        // if (col.match(/^[+\-]?\d+(\.\d+)?$/)) {
+        //   col = Number(col);
+        // }
         return col;
       });
     });
@@ -475,6 +475,80 @@ Ext.define("Pages.TableJson.MainView", {
       ],
       items: {
         xtype: "handson-table",
+        contextMenu: {
+          items: {
+            "to_string": { //カスタムメニューアイテム
+              name: '選択セルを文字列型に変更',
+              callback: function (key, selection, clickEvent) {
+                // 選択されているすべてのセルを文字列型に変更
+                var startRow = Math.min(selection[0].start.row, selection[0].end.row);
+                var endRow = Math.max(selection[0].start.row, selection[0].end.row);
+                var startCol = Math.min(selection[0].start.col, selection[0].end.col);
+                var endCol = Math.max(selection[0].start.col, selection[0].end.col);
+
+                for (var row = startRow; row <= endRow; row++) {
+                  for (var col = startCol; col <= endCol; col++) {
+                    var value = this.getDataAtCell(row, col);
+                    if (typeof value !== 'string') {
+                      this.setDataAtCell(row, col, String(value));
+                    }
+                  }
+                }
+              }
+            },
+            "to_number": { //カスタムメニューアイテム
+              name: '選択セルを数値型に変更',
+              callback: function (key, selection, clickEvent) {
+                // 選択されているすべてのセルを文字列型に変更
+                var startRow = Math.min(selection[0].start.row, selection[0].end.row);
+                var endRow = Math.max(selection[0].start.row, selection[0].end.row);
+                var startCol = Math.min(selection[0].start.col, selection[0].end.col);
+                var endCol = Math.max(selection[0].start.col, selection[0].end.col);
+
+                for (var row = startRow; row <= endRow; row++) {
+                  for (var col = startCol; col <= endCol; col++) {
+                    var value = this.getDataAtCell(row, col);
+                    if (String(value).match(/^[+\-]?\d+(\.\d+)?$/)) {
+                      this.setDataAtCell(row, col, Number(value));
+                    }
+                  }
+                }
+              }
+            },
+            "hsep1": "---------", //セパレータ
+            "row_above": {}, //行を上に追加
+            "row_below": {}, //行を下に追加
+            "remove_row": {}, //行を削除   
+            "hsep2": "---------", //セパレータ
+            "col_left": {},
+            "col_right": {},
+            "remove_col": {},
+            "hsep3": "---------", //セパレータ
+            "undo": {},
+            "redo": {},
+
+          }
+        },
+        cells: function (row, col) {
+          var cellProperties = {};
+          var data = this.instance.getDataAtCell(row, col);
+
+          if (typeof data === 'number') {
+            cellProperties.renderer = function (hotInstance, TD, row, col, prop, value, cellProperties) {
+              Handsontable.renderers.TextRenderer.apply(this, arguments);
+              TD.style.backgroundColor = 'lightgreen';
+            };
+            cellProperties.className = 'align-right';
+          }
+          if (typeof data === 'string') {
+            cellProperties.renderer = function (hotInstance, TD, row, col, prop, value, cellProperties) {
+              Handsontable.renderers.TextRenderer.apply(this, arguments);
+              TD.style.backgroundColor = '';
+            };
+            cellProperties.className = 'align-left';
+          }
+          return cellProperties;
+        },
         bind: {
           data: "{rows}",
         },
