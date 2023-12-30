@@ -13,7 +13,7 @@ Ext.define('Pages.YamlJsonConverterViewModel', {
 Ext.define('Pages.YamlJsonConverterController', {
   extend: 'Pages.BaseController',
   alias: 'controller.YamlJsonConverter',
-  init: function() {
+  init: function () {
     var data, json, me, vm;
     me = this;
     me.callParent(arguments);
@@ -22,7 +22,7 @@ Ext.define('Pages.YamlJsonConverterController', {
 
     return me.toJson();
   },
-  toJson: function() {
+  toJson: function () {
     var data, jsonData, me, tabSize, vm, yaml;
     me = this;
     vm = me.getViewModel();
@@ -34,7 +34,7 @@ Ext.define('Pages.YamlJsonConverterController', {
       outputText: JSON.stringify(jsonData, null, tabSize)
     });
   },
-  toYaml: function() {
+  toYaml: function () {
     var jsonData, me, vm;
     me = this;
     vm = me.getViewModel();
@@ -43,7 +43,7 @@ Ext.define('Pages.YamlJsonConverterController', {
       inputText: jsyaml.dump(jsonData)
     });
   },
-  toPretty: function() {
+  toPretty: function () {
     var data, jsonData, me, tabSize, vm;
     me = this;
     vm = me.getViewModel();
@@ -54,7 +54,7 @@ Ext.define('Pages.YamlJsonConverterController', {
       outputText: JSON.stringify(jsonData, null, tabSize)
     });
   },
-  toUgly: function() {
+  toUgly: function () {
     var jsonData, me, vm;
     me = this;
     vm = me.getViewModel();
@@ -63,38 +63,38 @@ Ext.define('Pages.YamlJsonConverterController', {
       outputText: JSON.stringify(jsonData)
     });
   },
-  getTokens: function(line) {
+  getTokens: function (line) {
     var tokens;
     if (line.match(/^([a-zA-Z][a-zA-Z0-9]+)([A-Z][a-zA-Z0-9]+)*$/)) {
       tokens = line.split(/([A-Z][a-z0-9]+)/);
       if (tokens.length === 1) {
         return tokens;
       }
-      return tokens.filter(function(token) {
+      return tokens.filter(function (token) {
         return token !== "";
       });
-    } else if (line.match(/^([a-zA-Z][a-zA-Z0-9]+)(_[a-zA-Z0-9]+)*$/)) {
+    } else if (line.match(/^([a-zA-Z][a-zA-Z0-9]*)(_[a-zA-Z0-9]+)*$/)) {
       if (line.indexOf("_") === -1) {
         return [line];
       }
       return line.split(/_/);
     }
   },
-  toCamelCase: function() {
+  toCamelCase: function () {
     var data, me, tabSize, vm;
     me = this;
     vm = me.getViewModel();
     data = vm.getData();
     tabSize = data.tabSize;
     return vm.setData({
-      inputText: data.inputText.split(/\n/g).map(function(line) {
+      inputText: data.inputText.split(/\n/g).map(function (line) {
         var key, spc, val;
         if (line.match(/^([\s\-]*)(\w+)(:.*)$/)) {
           spc = RegExp.$1;
           key = RegExp.$2;
           val = RegExp.$3;
           console.log(key);
-          key = me.getTokens(key).map(function(token) {
+          key = me.getTokens(key).map(function (token) {
             token = token.toLowerCase();
             return token[0].toUpperCase() + token.slice(1);
           }).join("");
@@ -105,20 +105,20 @@ Ext.define('Pages.YamlJsonConverterController', {
       }).join("\n")
     });
   },
-  toSnakeCase: function() {
+  toSnakeCase: function () {
     var data, me, tabSize, vm;
     me = this;
     vm = me.getViewModel();
     data = vm.getData();
     tabSize = data.tabSize;
     return vm.setData({
-      inputText: data.inputText.split(/\n/g).map(function(line) {
+      inputText: data.inputText.split(/\n/g).map(function (line) {
         var key, spc, val;
         if (line.match(/^([\s\-]*)(\w+)(:.*)$/)) {
           spc = RegExp.$1;
           key = RegExp.$2;
           val = RegExp.$3;
-          key = me.getTokens(key).map(function(token) {
+          key = me.getTokens(key).map(function (token) {
             return token.toLowerCase();
           }).join("_");
           line = spc + key + val;
@@ -166,7 +166,7 @@ Ext.define('Pages.YamlJsonConverter', {
           options: {
             language: 'yaml',
             minimap: {
-                enabled: true
+              enabled: true
             }
           },
           bind: {
@@ -204,7 +204,7 @@ Ext.define('Pages.YamlJsonConverter', {
           options: {
             language: 'json',
             minimap: {
-                enabled: true
+              enabled: true
             }
           },
           reference: 'txtOutput',
