@@ -40,6 +40,7 @@ Ext.define('Pages.SqlSwitcherViewModel', {
   },
   data: {
     title: 'SQLSwitchさん',
+    iconCls: 'fas fa-snowplow',
     txtInput: 'a = 1',
     txtOutput: '出力用テキストエリアにバインドされます',
     autoCopy: false,
@@ -235,7 +236,8 @@ Ext.define('Pages.SqlSwitcher', {
   controller: 'SqlSwitcher',
   viewModel: 'SqlSwitcher',
   bind: {
-    title: '{title}'
+    title: '{title}',
+    iconCls: '{iconCls}'
   },
   items: [
     {
