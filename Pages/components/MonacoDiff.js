@@ -18,6 +18,10 @@ Ext.define('Pages.components.MonacoDiff', {
         this.callParent([text])
         me.setModel();
     },
+    getLhs() {
+        const me = this
+        return me.editor.getOriginalEditor().getValue()
+    },
     setModified(text) {
         const me = this
         this.callParent([text])
@@ -49,7 +53,7 @@ Ext.define('Pages.components.MonacoDiff', {
 
             me.editor = monaco.editor.createDiffEditor(me.targetDiv, options);
             me.setModel()
-            me.editor.getOriginalEditor().updateOptions({readOnly:false})
+            me.editor.getOriginalEditor().updateOptions({ readOnly: false })
 
             // me.editor.getOriginalEditor().onDidChangeModelContent(event => {
             //     const value = me.editor.getOriginalEditor().getValue();

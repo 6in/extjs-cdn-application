@@ -253,3 +253,30 @@ TinySql:
       - ''
       - ''
       - ''      
+SqlSwitcher: 
+  txtInput: |
+    SELECT 
+      *
+    FROM 
+      TABLE_A
+    WHERE 1=1
+    /*IF param == "1" */
+    AND COLUMN = /*param*/1
+    /*ELIF param == "2" */
+    AND COLUMN = /*param*/2
+    /*ELIF param == "3" */
+    AND COLUMN = /*param*/3
+    /*ELSE*/
+    AND COLUMN = /*param*/4
+    /*END*/
+    ORDER BY
+    /*IF param == "1" */
+      COLUMN1
+    /*ELIF param == "2" */
+      COLUMN2
+    /*ELIF param == "3" */
+      COLUMN3
+    /*ELSE*/
+      COLUMN4
+    /*END*/
+  txtOutput: ''

@@ -118,6 +118,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 leaf: true
                             },
                             {
+                                name: 'SQLSwitchさん',
+                                page: 'Pages.SqlSwitcher',
+                                description: '2WaySql シミュレータ',
+                                iconCls: 'fas fa-snowplow',
+                                leaf: true
+                            },
+                            {
                                 name: '簡易DBさん',
                                 page: 'Pages.TinySql',
                                 description: '簡易的なDBでデータ処理できます。',
