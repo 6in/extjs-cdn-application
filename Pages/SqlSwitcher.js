@@ -99,7 +99,7 @@ Ext.define('Pages.SqlSwitcherController', {
     vm.setData({
       txtInput: lhs
     });
-    regIf = /^\s*(\/\*(IF|ELIF|ELSE|END).+)$/;
+    regIf = /^\s*(\/\*\s?(IF|ELIF|ELSE|END).+)$/;
     regParam = /\/\*\w+\*\/(\d+|'[^']+'|\([^\)]+\))/g;
     ifStmt = {};
     lineCondition = [];
