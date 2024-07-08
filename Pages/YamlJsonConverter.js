@@ -4,9 +4,10 @@ Ext.define('Pages.YamlJsonConverterViewModel', {
   reference: 'viewmodel',
   data: {
     title: 'Yaml↔Json変換さん',
-    inputText: 'key_name: value',
-    outputText: '',
-    tabSize: 2
+    txtInput: 'key_name: value',
+    txtOutput: '',
+    tabSize: 2,
+    jsonlMode: false
   }
 });
 
@@ -27,20 +28,38 @@ Ext.define('Pages.YamlJsonConverterController', {
     me = this;
     vm = me.getViewModel();
     data = vm.getData();
-    tabSize = data.tabSize;
-    yaml = data.inputText;
-    jsonData = jsyaml.load(yaml);
-    return vm.setData({
-      outputText: JSON.stringify(jsonData, null, tabSize)
-    });
+    if (data.jsonlMode) {
+
+      const text = jsyaml.load(data.txtInput).map( line => {
+        return JSON.stringify(line)
+      }).join("\n")
+
+      return vm.setData({
+        txtOutput: text
+      });
+
+    } else {
+      tabSize = data.tabSize;
+      yaml = data.txtInput;
+      jsonData = jsyaml.load(yaml);
+      return vm.setData({
+        txtOutput: JSON.stringify(jsonData, null, tabSize)
+      });
+    }
   },
   toYaml: function () {
     var jsonData, me, vm;
     me = this;
     vm = me.getViewModel();
-    jsonData = JSON.parse(vm.getData().outputText);
+    data = vm.getData();
+    if (data.jsonlMode) {
+      jsonData = data.txtOutput.split(/\r?\n/).filter(line => line.trim() !== "").map( line => JSON.parse(line))
+    } else {
+      jsonData = JSON.parse(data.txtOutput);
+    }
+
     return vm.setData({
-      inputText: jsyaml.dump(jsonData)
+      txtInput: jsyaml.dump(jsonData)
     });
   },
   toPretty: function () {
@@ -49,18 +68,18 @@ Ext.define('Pages.YamlJsonConverterController', {
     vm = me.getViewModel();
     data = vm.getData();
     tabSize = data.tabSize;
-    jsonData = JSON.parse(data.outputText);
+    jsonData = JSON.parse(data.txtOutput);
     return vm.setData({
-      outputText: JSON.stringify(jsonData, null, tabSize)
+      txtOutput: JSON.stringify(jsonData, null, tabSize)
     });
   },
   toUgly: function () {
     var jsonData, me, vm;
     me = this;
     vm = me.getViewModel();
-    jsonData = JSON.parse(vm.getData().outputText);
+    jsonData = JSON.parse(vm.getData().txtOutput);
     return vm.setData({
-      outputText: JSON.stringify(jsonData)
+      txtOutput: JSON.stringify(jsonData)
     });
   },
   getTokens: function (line) {
@@ -87,7 +106,7 @@ Ext.define('Pages.YamlJsonConverterController', {
     data = vm.getData();
     tabSize = data.tabSize;
     return vm.setData({
-      inputText: data.inputText.split(/\n/g).map(function (line) {
+      txtInput: data.txtInput.split(/\n/g).map(function (line) {
         var key, spc, val;
         if (line.match(/^([\s\-]*)(\w+)(:.*)$/)) {
           spc = RegExp.$1;
@@ -112,7 +131,7 @@ Ext.define('Pages.YamlJsonConverterController', {
     data = vm.getData();
     tabSize = data.tabSize;
     return vm.setData({
-      inputText: data.inputText.split(/\n/g).map(function (line) {
+      txtInput: data.txtInput.split(/\n/g).map(function (line) {
         var key, spc, val;
         if (line.match(/^([\s\-]*)(\w+)(:.*)$/)) {
           spc = RegExp.$1;
@@ -126,6 +145,33 @@ Ext.define('Pages.YamlJsonConverterController', {
         return line;
       }).join("\n")
     });
+  },
+  onChangeJSONLMode (obj,value) {
+    var data, me, vm;
+    me = this;
+    vm = me.getViewModel();
+    data = vm.getData();
+    
+    if (value) {
+      me.alert("確認","JSONLモードに変更します。テキストは初期値が設定されます。").then( ok => {
+        vm.setData({
+          jsonlMode: true,
+          txtInput: '',
+          txtOutput: '{"id": 1}\n{"id": 2}'
+        })
+        me.lookupReference("txtOutput").editor.updateOptions({wordWrap: "on"})
+        me.toYaml()
+      })
+    } else {
+      me.alert("確認","JSONLモードを解除します。テキストは初期値が設定されます。").then( ok => {
+        vm.setData({
+          jsonlMode: true,
+          txtInput: 'key_name: value',
+          txtOutput: ''
+        })
+        me.lookupReference("txtOutput").editor.updateOptions({wordWrap: "off"})
+      })
+    }
   }
 });
 
@@ -161,7 +207,6 @@ Ext.define('Pages.YamlJsonConverter', {
       items: [
         {
           xtype: 'monaco',
-          itemId: 'txtInput',
           reference: 'txtInput',
           options: {
             language: 'yaml',
@@ -170,7 +215,7 @@ Ext.define('Pages.YamlJsonConverter', {
             }
           },
           bind: {
-            value: '{inputText}'
+            value: '{txtInput}'
           }
         }
       ]
@@ -195,12 +240,22 @@ Ext.define('Pages.YamlJsonConverter', {
             value: '{tabSize}'
           },
           width: 100
+        }, {
+          text: 'jsonl',
+          xtype: 'checkbox',
+          boxLabel: 'JSONL mode',
+          listeners: {
+            change: 'onChangeJSONLMode'
+          },
+          bind: {
+            value: '{jsonl}'
+          }
         }
+
       ],
       items: [
         {
           xtype: 'monaco',
-          itemId: 'txtOutput',
           options: {
             language: 'json',
             minimap: {
@@ -209,7 +264,7 @@ Ext.define('Pages.YamlJsonConverter', {
           },
           reference: 'txtOutput',
           bind: {
-            value: '{outputText}'
+            value: '{txtOutput}'
           }
         }
       ]

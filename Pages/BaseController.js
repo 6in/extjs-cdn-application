@@ -55,6 +55,23 @@ Ext.define('Pages.BaseController', {
         })
     },
     /**
+     * 入力ダイアログを表示
+     * @param {string}} title タイトル
+     * @param {string} message メッセージ
+     * @returns {Promise} プロミスオブジェクト。入力された文字列が返却される。
+     */
+    alert(title, message) {
+        return new Promise((resolve, reject) => {
+            Ext.Msg.alert(title, message, (button, text) => {
+                if (button === 'ok') {
+                    resolve(text)
+                } else {
+                    reject(button);
+                }
+            })
+        })
+    },
+    /**
      * 確認ダイアログを表示する
      * @param {string}} title タイトル
      * @param {string} message メッセージ
