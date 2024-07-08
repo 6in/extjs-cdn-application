@@ -117,8 +117,9 @@ Ext.define('Pages.YamlJsonConverterController', {
             token = token.toLowerCase();
             return token[0].toUpperCase() + token.slice(1);
           }).join("");
+          key = key[0].toLowerCase() + key.slice(1);
           line = spc + key + val;
-          line[0].toLowerCase() + line.slice(1);
+          
         }
         return line;
       }).join("\n")
