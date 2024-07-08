@@ -166,7 +166,7 @@ Ext.define('Pages.YamlJsonConverterController', {
     } else {
       me.alert("確認","JSONLモードを解除します。テキストは初期値が設定されます。").then( ok => {
         vm.setData({
-          jsonlMode: true,
+          jsonlMode: false,
           txtInput: 'key_name: value',
           txtOutput: ''
         })
