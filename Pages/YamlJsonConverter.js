@@ -173,7 +173,66 @@ Ext.define('Pages.YamlJsonConverterController', {
         me.lookupReference("txtOutput").editor.updateOptions({wordWrap: "off"})
       })
     }
-  }
+  },
+  onEscapeJson() {
+    var data, me, vm;
+    me = this;
+    vm = me.getViewModel();
+    data = vm.getData();
+
+    const result = JSON.stringify(JSON.stringify(JSON.parse(data.txtOutput)))
+    console.log(result)
+
+    const win = Ext.create("Ext.window.Window",{
+      title: 'Escape JSON',
+      width: 800,
+      height: 600,
+      closable: true,
+      modal: true,
+      layout: 'fit',
+      items: {
+        xtype: 'monaco',
+        options: {
+          value: result
+        }
+      }      
+    })
+    win.show()   
+  },
+  onUnescapeJson() {
+    var data, me, vm;
+    me = this;
+    vm = me.getViewModel();
+    data = vm.getData();
+
+    const win = Ext.create("Ext.window.Window",{
+      title: 'Unescape JSON',
+      width: 800,
+      height: 600,
+      closable: true,
+      modal: true,
+      layout: 'fit',
+      items: {
+        xtype: 'monaco',
+        options: {
+          value: 'エスケープされたJSONを貼り付け後、取り込みボタンをクリック'
+        }
+      },
+      buttons: [{
+        text: '取り込み',
+        handler() {
+          debugger
+          let text = JSON.parse(win.down("monaco").getValue())
+//          text = text.replace(/\\"/g, '"')
+          vm.setData({txtOutput: text})
+          win.close()
+        }
+      }
+      ]
+    })
+    win.show()   
+  },
+
 });
 
 Ext.define('Pages.YamlJsonConverter', {
@@ -251,8 +310,13 @@ Ext.define('Pages.YamlJsonConverter', {
           bind: {
             value: '{jsonl}'
           }
+        },{
+          text: 'Escape JSON',
+          handler: 'onEscapeJson'
+        },{
+          text: 'Unescape JSON',
+          handler: 'onUnescapeJson'
         }
-
       ],
       items: [
         {
