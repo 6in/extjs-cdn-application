@@ -153,7 +153,24 @@ Ext.define('Pages.YamlJsonConverterController', {
     vm = me.getViewModel();
     data = vm.getData();
     
-    if (value) {
+    if (me.silent) {
+      if (value) {
+        vm.setData({
+          jsonlMode: true,
+          txtInput: '',
+          txtOutput: ''
+        })
+        me.lookupReference("txtOutput").editor.updateOptions({wordWrap: "on"})
+      } else {
+        vm.setData({
+          jsonlMode: false,
+          txtInput: 'key_name: value',
+          txtOutput: ''
+        })
+        me.lookupReference("txtOutput").editor.updateOptions({wordWrap: "off"})
+      }
+    }
+    else if (value) {
       me.alert("確認","JSONLモードに変更します。テキストは初期値が設定されます。").then( ok => {
         vm.setData({
           jsonlMode: true,
@@ -232,6 +249,57 @@ Ext.define('Pages.YamlJsonConverterController', {
     })
     win.show()   
   },
+  onTxtOutputAfterrender() {
+    const me = this
+    const txtBoxes = ['txtInput', 'txtOutput']
+    txtBoxes.forEach( (txt) => {
+      me.lookupReference(txt).getEl().dom.addEventListener('drop', (e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        me.readDropFile(e,txt)
+      }
+      , false
+      )
+    })
+  }, 
+  readDropFile(event,txt) {
+    const me = this
+    const vm = me.getViewModel()
+    console.log(txt)
+    
+    const items = event.dataTransfer.items
+    if (items.length !== 1) {
+      return 
+    }
+
+    const item = items[0]
+    if (item.kind !== 'file') {
+      return
+    }
+
+    if (txt === 'txtOutput' && event.dataTransfer.files[0].name.endsWith('.jsonl')) {
+      me.silent = true
+      vm.setData({jsonl: true})
+    }
+
+    let fileName = ""
+    // FileSystemFileHandle オブジェクトを取得
+    item.getAsFileSystemHandle().then( (handle) => {
+      handle.queryPermission({mode: 'read'})
+      return handle
+    }).then( (handle) => {
+      return handle.getFile()
+    }).then( (file) => {
+      console.log(file.name)
+      return file.text()
+    }).then( (text) => {
+      vm.setData({
+        [txt]: text 
+      })
+      me.silent = false
+      me.toYaml()
+    })
+  },
 
 });
 
@@ -243,6 +311,11 @@ Ext.define('Pages.YamlJsonConverter', {
 
   bind: {
     title: '{title}'
+  },
+
+  listeners: {
+    afterrender: 'onTxtOutputAfterrender',
+    fileDrop: 'onFileDrop',
   },
 
   items: [
@@ -330,7 +403,7 @@ Ext.define('Pages.YamlJsonConverter', {
           reference: 'txtOutput',
           bind: {
             value: '{txtOutput}'
-          }
+          },
         }
       ]
     }
