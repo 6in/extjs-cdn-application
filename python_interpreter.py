@@ -5,7 +5,10 @@ from datetime import datetime
 import yaml
 import json
 from pyscript import display, window
+import pyodide_http
 from pyodide.ffi.wrappers import add_event_listener
+
+pyodide_http.patch_all()
 
 def run_convert(script,input_text) :
     g = dict(result="", input= input_text)
