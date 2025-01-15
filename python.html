@@ -2,65 +2,15 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-
-    <script>
-        console.log("python.html")
-        window.addEventListener('message', event => {
-            const mainWindow = event.source;
-            let result = "";
-            try {
-                console.log("recieved")
-                // 変換実行
-                run_convert = pyscript.interpreter.globals.get('run_convert')
-                if (run_convert) {
-                    console.log(event.data)
-                    result = run_convert(event.data.script, event.data.text)
-                }
-
-                // 結果を送信
-                mainWindow.postMessage(result, event.origin);
-            } catch (err) {
-                // 結果を送信
-                mainWindow.postMessage(err.message, event.origin);
-            }
-        });
-    </script>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
 
 </head>
 
-
 <body>
-
-    <py-config>
-        packages = ["pandas", "pyyaml", "requests", "pyodide-http", "sqlite3"]
-    </py-config>
-    <py-script>
-        import sys
-        import os
-        import re
-        from datetime import datetime
-        import yaml
-        import json
-        import pandas as pd
-        import requests
-        import pyodide_http
-        import sqlite3 as sql
-
-        pyodide_http.patch_all() # Requestsにパッチをあてる
-
-        def run_convert(script,input_text) :
-            g = dict(result="", input= input_text)
-            try:
-                exec( script + "\nresult = convert(input)\n", globals(), g)
-            except Exception as e:
-                g["result"] = "例外args:\n" + e.args
-            return g["result"]
-
-        display("python ready")
-
+    <py-script src="./python_interpreter.py" config="./py-config.json">
     </py-script>
 </body>
+
 
 </html>

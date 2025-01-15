@@ -1,0 +1,3 @@
+{
+    "packages": ["pandas", "pyyaml", "requests", "pyodide-http", "sqlite3"]
+}

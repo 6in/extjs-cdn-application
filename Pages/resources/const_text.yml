@@ -138,6 +138,7 @@ ReplaceTextPython:
     def convert(text):
       text = text.replace("テキスト","文字列")
       text = text.replace("貼り付け","ペーストし")
+      display(f"ログが出力できます({len(text)})")
       return text
   original: |
     ここに変換前のテキストを貼り付けてください。
