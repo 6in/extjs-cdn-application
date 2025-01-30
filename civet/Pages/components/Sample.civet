@@ -1,0 +1,10 @@
+Ext.define('Sample',
+    extend: 'Ext.Component'
+    alias: 'widget.Sample'
+    config: 
+        src: ''
+        target: ''
+    constructor: (config) ->
+        this.callParent([config])
+        return
+)
