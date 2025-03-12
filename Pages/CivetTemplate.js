@@ -2,7 +2,7 @@ Ext.define('Pages.CivetTemplateViewModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.CivetTemplate',
     data: {
-        title: 'Civet Template',
+        title: 'オフメモさん',
     },
 
     stores: {

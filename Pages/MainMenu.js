@@ -132,11 +132,11 @@ Ext.define('Pages.MainMenuViewModel', {
                                 leaf: true
                             },
                             {
-                                name: 'オフラインメモ帳さん',
+                                name: 'オフメモさん',
                                 page: 'Pages.CivetTemplate',
-                                description: 'オフラインメモアプリ',
+                                description: 'オフラインにメモを保存します',
                                 // (font-awesome) https://fontawesome.com/icons?d=gallery
-                                iconCls: 'fa fa-cat',
+                                iconCls: 'fa fa-sticky-note',
                                 leaf: true
                             },
                         ]
