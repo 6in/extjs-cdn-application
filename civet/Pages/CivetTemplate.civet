@@ -1,0 +1,114 @@
+Ext.define('Pages.CivetTemplateViewModel',
+    extend: 'Ext.app.ViewModel'
+    alias: 'viewmodel.CivetTemplate'
+    data:
+        title: 'Civet Template'
+
+    stores: {
+    }
+)
+
+Ext.define('Page.CivetTemplateController',
+    extend: 'Pages.BaseController'
+    alias: 'controller.CivetTemplate'
+    init: async () ->
+        const me = this
+        me.callParent(arguments)
+
+        me.appProperty = Ext.create('Pages.components.AppProperty',
+            appName:'civet'
+        )
+        props := await me.appProperty.getProperties()
+
+        me.delay 200, ->
+            props.forEach ( (prop) ->
+                tab := me.addTab(prop)
+                me.onChangeText tab.down('monaco'), [prop.props.text]
+            )
+
+    addTab: (prop) ->
+        const me = this
+        tabs := me.lookupReference('tabs')
+        tab := tabs.add {
+            title: prop.name
+            layout: 'fit'
+            closable: true
+            listeners:
+                close: 'onCloseTab'
+            items:
+                xtype: 'monaco'
+                itemId: `memo${prop.id}`
+                propId: prop.id
+                tabSize: 4
+                value: prop.props.text
+                listeners:
+                    change: 'onChangeText'
+        }
+        tabs.setActiveTab tab
+        tab
+
+    onChangeText: async (obj, value) ->
+        {me} := @me()
+
+        name := obj.itemId
+        id :=  await me.appProperty.upsert(obj.propId, name, text: value[0])
+        headLine := value[0].split('\n')[0]
+        m := headLine.match(/.*lang:(?<lang>\w+)/)
+        if m
+            obj.changeLanguage m.groups.lang
+        obj.propId = id unless obj.propId
+
+    addRec: async () ->
+        {me} := @me()
+        newId := await me.appProperty.upsert(null, '', text: '')
+        prop := {id: newId, name: `memo${newId}`, props: {text: '# lang:python\nprint("hello")'}}
+        tab := me.addTab(prop)
+        me.onChangeText tab.down('monaco'), [prop.props.text]
+
+    me: ->
+        me := this
+        vm := this.getViewModel()
+        data := vm.getData()
+        return {me,vm,data}
+
+    onClearAll: async ->
+        {me} := @me()
+        debugger
+        if await me.confirm("確認","全データを削除してよろしいですか？") is 'yes'
+            me.appProperty.clearAll() 
+            tabs := me.lookupReference('tabs')
+            tabs.removeAll()
+
+    onCloseTab: (obj) ->
+        {me}  := @me()
+        id := obj.down('monaco').propId
+        return if id is undefined
+        me.appProperty.delete(id)
+)
+
+Ext.define('Pages.CivetTemplate',
+    extend: 'Ext.panel.Panel'
+
+    controller: 'CivetTemplate'
+    viewModel: 'CivetTemplate'
+
+    tbar: [
+        text: 'add'
+        handler: 'addRec'
+    ,
+        '->'
+    ,
+        text: 'clear'
+        handler: 'onClearAll'
+    ]
+
+    bind:
+        title: '{title}'
+
+    layout: 'fit'
+    items:
+        xtype: 'tabpanel'
+        reference: 'tabs'
+        items: [
+        ]
+)

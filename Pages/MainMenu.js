@@ -131,6 +131,14 @@ Ext.define('Pages.MainMenuViewModel', {
                                 iconCls: 'fas fa-database',
                                 leaf: true
                             },
+                            {
+                                name: 'オフラインメモ帳さん',
+                                page: 'Pages.CivetTemplate',
+                                description: 'オフラインメモアプリ',
+                                // (font-awesome) https://fontawesome.com/icons?d=gallery
+                                iconCls: 'fa fa-cat',
+                                leaf: true
+                            },
                         ]
                     }
                     , {
@@ -139,11 +147,12 @@ Ext.define('Pages.MainMenuViewModel', {
                         children: [
                             // {
                             //     name: 'Template',
-                            //     page: 'Pages.Template',
-                            //     description: 'ページテンプレート',
+                            //     page: 'Pages.CivetTemplate',
+                            //     description: 'ページテンプレート(civet)',
                             //     // (font-awesome) https://fontawesome.com/icons?d=gallery
                             //     iconCls: 'fa fa-cat',
                             //     leaf: true
+                            // },
                             // }, {
                             //     name: 'Monaco',
                             //     page: 'Pages.MonacoSample',

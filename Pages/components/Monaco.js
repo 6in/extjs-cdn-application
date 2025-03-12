@@ -24,7 +24,7 @@ Ext.define('Pages.components.Monaco', {
         if (this.editor) {
             return this.editor.getValue();
         }
-        return '';
+        return this.config.value;
     },
     setValue(text) {
         if (this.editor) {
@@ -46,6 +46,8 @@ Ext.define('Pages.components.Monaco', {
             const me = this
             const id = `${me.getId()}_monaco`
             me.targetDiv = document.getElementById(id)
+            
+            // console.log('afterrender:' + me.config.value)
             const options = Object.assign(
                 {
                     value: me.getValue(),
