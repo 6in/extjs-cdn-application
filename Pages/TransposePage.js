@@ -174,6 +174,82 @@ Ext.define('Page.TransposePageController', {
     },
 
     /**
+     * テキストを左右反転する（水平反転）
+     */
+    flipHorizontal() {
+        const me = this;
+        const vm = me.getViewModel();
+        const data = vm.getData();
+        const { sourceText, delimiter, useFirstRowAsHeader } = data;
+
+        if (!sourceText) {
+            return;
+        }
+
+        try {
+            // 入力テキストを行に分割
+            const rows = sourceText.split(/\r?\n/).filter(row => row.trim() !== '');
+
+            if (rows.length === 0) {
+                vm.set('resultText', '');
+                return;
+            }
+
+            // 各行をデリミタで分割して2次元配列にする
+            const matrix = rows.map(row => row.split(delimiter));
+
+            // 各行を反転
+            const flipped = matrix.map(row => [...row].reverse());
+
+            // 結果の2次元配列を文字列に戻す
+            const resultText = flipped.map(row => row.join(delimiter)).join('\n');
+
+            vm.set('resultText', resultText);
+        } catch (e) {
+            console.error('左右反転処理でエラーが発生しました', e);
+            vm.set('resultText', `エラー: ${e.message}`);
+        }
+    },
+
+    /**
+     * テキストを上下反転する（垂直反転）
+     */
+    flipVertical() {
+        const me = this;
+        const vm = me.getViewModel();
+        const data = vm.getData();
+        const { sourceText, delimiter, useFirstRowAsHeader } = data;
+
+        if (!sourceText) {
+            return;
+        }
+
+        try {
+            // 入力テキストを行に分割
+            const rows = sourceText.split(/\r?\n/).filter(row => row.trim() !== '');
+
+            if (rows.length === 0) {
+                vm.set('resultText', '');
+                return;
+            }
+
+            // 各行をデリミタで分割して2次元配列にする
+            const matrix = rows.map(row => row.split(delimiter));
+
+            // 行を逆順にする
+            const flipped = [...matrix].reverse();
+
+            // 結果の2次元配列を文字列に戻す
+            const resultText = flipped.map(row => row.join(delimiter)).join('\n');
+
+            vm.set('resultText', resultText);
+        } catch (e) {
+            console.error('上下反転処理でエラーが発生しました', e);
+            vm.set('resultText', `エラー: ${e.message}`);
+        }
+    },
+
+    /**
      * 入力テキストが変更されたときのハンドラ
      */
     onSourceTextChange(field, newValue) {
@@ -271,15 +347,25 @@ Ext.define('Pages.TransposePage', {
                     change: 'onHeaderCheckChange'
                 }
             }, '->', {
-                text: '右回転',
-                iconCls: 'fa fa-rotate-right',
-                handler: 'rotateRight',
-                tooltip: '時計回りに90度回転'
+                text: '上下反転',
+                iconCls: 'fa fa-arrows-v',
+                handler: 'flipVertical',
+                tooltip: '行列を上下に反転'
+            }, {
+                text: '左右反転',
+                iconCls: 'fa fa-arrows-h',
+                handler: 'flipHorizontal',
+                tooltip: '行列を左右に反転'
             }, {
                 text: '左回転',
                 iconCls: 'fa fa-rotate-left',
                 handler: 'rotateLeft',
                 tooltip: '反時計回りに90度回転'
+            }, {
+                text: '右回転',
+                iconCls: 'fa fa-rotate-right',
+                handler: 'rotateRight',
+                tooltip: '時計回りに90度回転'
             }],
 
         items: [{
