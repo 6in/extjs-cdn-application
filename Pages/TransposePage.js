@@ -97,64 +97,6 @@ Ext.define('Page.TransposePageController', {
         }
     },
 
-    /** 
-     * テキストを反時計回り
-     */
-    rotateLeft() {
-        const me = this;
-        const vm = me.getViewModel();
-        const data = vm.getData();
-        const { sourceText, delimiter, useFirstRowAsHeader, rotationCount } = data;
-
-        if (!sourceText) {
-            return;
-        }
-
-        try {
-            // 回転回数を更新（反時計回り = +1）
-            const newRotationCount = rotationCount + 1;
-            vm.set('rotationCount', newRotationCount);
-
-            // 入力テキストを行に分割
-            const rows = sourceText.split(/\r?\n/).filter(row => row.trim() !== '');
-
-            if (rows.length === 0) {
-                vm.set('resultText', '');
-                return;
-            }
-
-            // 各行をデリミタで分割して2次元配列にする
-            const matrix = rows.map(row => row.split(delimiter));
-
-            // 最大列数を取得
-            const maxCols = Math.max(...matrix.map(row => row.length));
-
-            // 行列を指定回数だけ右90度回転
-            let rotated = matrix;
-            const normalizedCount = ((newRotationCount % 4) + 4) % 4; // 0-3に正規化
-
-            for (let rotation = 0; rotation < normalizedCount; rotation++) {
-                const temp = [];
-                for (let i = 0; i < maxCols; i++) {
-                    const newRow = [];
-                    for (let j = rotated.length - 1; j >= 0; j--) {
-                        newRow.push(rotated[j][i] || '');
-                    }
-                    temp.push(newRow);
-                }
-                rotated = temp;
-            }
-
-            // 結果の2次元配列を文字列に戻す
-            const resultText = rotated.map(row => row.join(delimiter)).join('\n');
-
-            vm.set('resultText', resultText);
-        } catch (e) {
-            console.error('右回転処理でエラーが発生しました', e);
-            vm.set('resultText', `エラー: ${e.message}`);
-        }
-    },
-
     /**
      * テキストを時計回り
      */
@@ -502,12 +444,7 @@ Ext.define('Pages.TransposePage', {
                         handler: 'flipHorizontal',
                         tooltip: '行列を左右に反転'
                     }, {
-                        text: '左回転',
-                        iconCls: 'fa fa-rotate-left',
-                        handler: 'rotateLeft',
-                        tooltip: '反時計回りに90度回転'
-                    }, {
-                        text: '右回転',
+                        text: '回転',
                         iconCls: 'fa fa-rotate-right',
                         handler: 'rotateRight',
                         tooltip: '時計回りに90度回転'
