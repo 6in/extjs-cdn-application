@@ -6,7 +6,8 @@ Ext.define('Pages.TransposePageViewModel', {
         sourceText: '1\t2\t3\n4\t5\t6\n7\t8\t9',
         resultText: '',
         delimiter: '\t',
-        useFirstRowAsHeader: false
+        useFirstRowAsHeader: false,
+        rotationCount: 0 // 回転回数（正：時計回り、負：反時計回り）
     },
     stores: {
 
@@ -19,6 +20,35 @@ Ext.define('Page.TransposePageController', {
     init() {
         const me = this;
         me.callParent(arguments);
+
+        // rotationCountの変更を監視
+        const vm = me.getViewModel();
+        vm.bind({
+            bindTo: '{rotationCount}',
+            deep: true,
+            callback: me.onRotationCountChange,
+            scope: me
+        });
+    },
+
+    /**
+     * 回転回数が変更されたときのハンドラ
+     */
+    onRotationCountChange(count) {
+        const me = this;
+        const view = me.getView();
+        const rightBtn = view.down('button[handler=rotateRight]');
+        const leftBtn = view.down('button[handler=rotateLeft]');
+
+        // 回転回数を0-3に正規化
+        const normalizedCount = ((count % 4) + 4) % 4;
+        
+        if (rightBtn) {
+            rightBtn.setText(`右回転 (${normalizedCount})`);
+        }
+        if (leftBtn) {
+            leftBtn.setText(`左回転 (${((-normalizedCount % 4) + 4) % 4})`);
+        }
     },
 
     /**
@@ -82,13 +112,17 @@ Ext.define('Page.TransposePageController', {
         const me = this;
         const vm = me.getViewModel();
         const data = vm.getData();
-        const { sourceText, delimiter, useFirstRowAsHeader } = data;
+        const { sourceText, delimiter, useFirstRowAsHeader, rotationCount } = data;
 
         if (!sourceText) {
             return;
         }
 
         try {
+            // 回転回数を更新（時計回り = +1）
+            const newRotationCount = rotationCount + 1;
+            vm.set('rotationCount', newRotationCount);
+
             // 入力テキストを行に分割
             const rows = sourceText.split(/\r?\n/).filter(row => row.trim() !== '');
 
@@ -103,15 +137,20 @@ Ext.define('Page.TransposePageController', {
             // 最大列数を取得
             const maxCols = Math.max(...matrix.map(row => row.length));
 
-            // 行列を右90度回転
-            const rotated = [];
-            for (let i = 0; i < maxCols; i++) {
-                const newRow = [];
-                for (let j = matrix.length - 1; j >= 0; j--) {
-                    // 元の行にその列が存在しない場合は空文字を追加
-                    newRow.push(matrix[j][i] || '');
+            // 行列を指定回数だけ右90度回転
+            let rotated = matrix;
+            const normalizedCount = ((newRotationCount % 4) + 4) % 4; // 0-3に正規化
+
+            for (let rotation = 0; rotation < normalizedCount; rotation++) {
+                const temp = [];
+                for (let i = 0; i < maxCols; i++) {
+                    const newRow = [];
+                    for (let j = rotated.length - 1; j >= 0; j--) {
+                        newRow.push(rotated[j][i] || '');
+                    }
+                    temp.push(newRow);
                 }
-                rotated.push(newRow);
+                rotated = temp;
             }
 
             // 結果の2次元配列を文字列に戻す
@@ -131,13 +170,17 @@ Ext.define('Page.TransposePageController', {
         const me = this;
         const vm = me.getViewModel();
         const data = vm.getData();
-        const { sourceText, delimiter, useFirstRowAsHeader } = data;
+        const { sourceText, delimiter, useFirstRowAsHeader, rotationCount } = data;
 
         if (!sourceText) {
             return;
         }
 
         try {
+            // 回転回数を更新（反時計回り = -1）
+            const newRotationCount = rotationCount - 1;
+            vm.set('rotationCount', newRotationCount);
+
             // 入力テキストを行に分割
             const rows = sourceText.split(/\r?\n/).filter(row => row.trim() !== '');
 
@@ -152,15 +195,20 @@ Ext.define('Page.TransposePageController', {
             // 最大列数を取得
             const maxCols = Math.max(...matrix.map(row => row.length));
 
-            // 行列を左90度回転
-            const rotated = [];
-            for (let i = maxCols - 1; i >= 0; i--) {
-                const newRow = [];
-                for (let j = 0; j < matrix.length; j++) {
-                    // 元の行にその列が存在しない場合は空文字を追加
-                    newRow.push(matrix[j][i] || '');
+            // 行列を指定回数だけ左90度回転
+            let rotated = matrix;
+            const normalizedCount = (((-newRotationCount % 4) + 4) % 4); // 0-3に正規化（右回転の回数として）
+
+            for (let rotation = 0; rotation < normalizedCount; rotation++) {
+                const temp = [];
+                for (let i = 0; i < maxCols; i++) {
+                    const newRow = [];
+                    for (let j = rotated.length - 1; j >= 0; j--) {
+                        newRow.push(rotated[j][i] || '');
+                    }
+                    temp.push(newRow);
                 }
-                rotated.push(newRow);
+                rotated = temp;
             }
 
             // 結果の2次元配列を文字列に戻す
@@ -249,35 +297,35 @@ Ext.define('Page.TransposePageController', {
         }
     },
 
-    /**
-     * 入力テキストが変更されたときのハンドラ
-     */
-    onSourceTextChange(field, newValue) {
-        const me = this;
-        me.delay( 100, () => {
-            me.transpose();
-        });
-    },
+    // /**
+    //  * 入力テキストが変更されたときのハンドラ
+    //  */
+    // onSourceTextChange(field, newValue) {
+    //     const me = this;
+    //     me.delay( 100, () => {
+    //         me.transpose();
+    //     });
+    // },
 
-    /**
-     * デリミタが変更されたときのハンドラ
-     */
-    onDelimiterChange(field, newValue) {
-        const me = this;
-        me.delay( 100, () => {
-            me.transpose();
-        });
-    },
+    // /**
+    //  * デリミタが変更されたときのハンドラ
+    //  */
+    // onDelimiterChange(field, newValue) {
+    //     const me = this;
+    //     me.delay( 100, () => {
+    //         me.transpose();
+    //     });
+    // },
 
-    /**
-     * ヘッダー設定が変更されたときのハンドラ
-     */
-    onHeaderCheckChange(field, newValue) {
-        const me = this;
-        me.delay( 100, () => {
-            me.transpose();
-        });
-    },
+    // /**
+    //  * ヘッダー設定が変更されたときのハンドラ
+    //  */
+    // onHeaderCheckChange(field, newValue) {
+    //     const me = this;
+    //     me.delay( 100, () => {
+    //         me.transpose();
+    //     });
+    // },
 
     /**
      * 結果をクリップボードにコピーする
@@ -328,9 +376,6 @@ Ext.define('Pages.TransposePage', {
                 xtype: 'textfield',
                 fieldLabel: 'デリミタ',
                 width: 150,
-                listeners: {
-                    change: 'onDelimiterChange'
-                },
                 bind: {
                     value: '{delimiter}'
                 }
@@ -343,29 +388,6 @@ Ext.define('Pages.TransposePage', {
                 inputValue: true,
                 uncheckedValue: false,
                 width: 200,
-                listeners: {
-                    change: 'onHeaderCheckChange'
-                }
-            }, '->', {
-                text: '上下反転',
-                iconCls: 'fa fa-arrows-v',
-                handler: 'flipVertical',
-                tooltip: '行列を上下に反転'
-            }, {
-                text: '左右反転',
-                iconCls: 'fa fa-arrows-h',
-                handler: 'flipHorizontal',
-                tooltip: '行列を左右に反転'
-            }, {
-                text: '左回転',
-                iconCls: 'fa fa-rotate-left',
-                handler: 'rotateLeft',
-                tooltip: '反時計回りに90度回転'
-            }, {
-                text: '右回転',
-                iconCls: 'fa fa-rotate-right',
-                handler: 'rotateRight',
-                tooltip: '時計回りに90度回転'
             }],
 
         items: [{
@@ -375,18 +397,45 @@ Ext.define('Pages.TransposePage', {
                 align: 'stretch'
             },
             flex: 1,
+
             items: [{
                 xtype: 'panel',
                 title: '入力テキスト',
                 flex: 1,
                 layout: 'fit',
+                tbar: [
+                    '->',
+                    {
+                        text: '転置',
+                        iconCls: 'fa fa-retweet',
+                        handler: 'transpose',
+                        tooltip: '行と列を入れ替える'
+                    }, {
+                        text: '上下反転',
+                        iconCls: 'fa fa-arrows-v',
+                        handler: 'flipVertical',
+                        tooltip: '行列を上下に反転'
+                    }, {
+                        text: '左右反転',
+                        iconCls: 'fa fa-arrows-h',
+                        handler: 'flipHorizontal',
+                        tooltip: '行列を左右に反転'
+                    }, {
+                        text: '左回転',
+                        iconCls: 'fa fa-rotate-left',
+                        handler: 'rotateLeft',
+                        tooltip: '反時計回りに90度回転'
+                    }, {
+                        text: '右回転',
+                        iconCls: 'fa fa-rotate-right',
+                        handler: 'rotateRight',
+                        tooltip: '時計回りに90度回転'
+                    }
+                ],
                 items: {
                     xtype: 'monaco',
                     bind: {
                         value: '{sourceText}'
-                    },
-                    listeners: {
-                        change: 'onSourceTextChange'
                     }
                 }
             }, {
