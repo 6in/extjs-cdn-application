@@ -7,7 +7,10 @@ Ext.define('Pages.TransposePageViewModel', {
         resultText: '',
         delimiter: '\t',
         useFirstRowAsHeader: false,
-        rotationCount: 0 // 回転回数（正：時計回り、負：反時計回り）
+        rotationCount: 0, // 回転回数（正：時計回り、負：反時計回り）
+        isTransposed: false, // 転置状態
+        isFlippedVertical: false, // 上下反転状態
+        isFlippedHorizontal: false // 左右反転状態
     },
     stores: {
 
@@ -21,34 +24,9 @@ Ext.define('Page.TransposePageController', {
         const me = this;
         me.callParent(arguments);
 
-        // rotationCountの変更を監視
+        // モデルの変更を監視
         const vm = me.getViewModel();
-        vm.bind({
-            bindTo: '{rotationCount}',
-            deep: true,
-            callback: me.onRotationCountChange,
-            scope: me
-        });
-    },
 
-    /**
-     * 回転回数が変更されたときのハンドラ
-     */
-    onRotationCountChange(count) {
-        const me = this;
-        const view = me.getView();
-        const rightBtn = view.down('button[handler=rotateRight]');
-        const leftBtn = view.down('button[handler=rotateLeft]');
-
-        // 回転回数を0-3に正規化
-        const normalizedCount = ((count % 4) + 4) % 4;
-        
-        if (rightBtn) {
-            rightBtn.setText(`右回転 (${normalizedCount})`);
-        }
-        if (leftBtn) {
-            leftBtn.setText(`左回転 (${((-normalizedCount % 4) + 4) % 4})`);
-        }
     },
 
     /**
@@ -58,15 +36,19 @@ Ext.define('Page.TransposePageController', {
         const me = this;
         const vm = me.getViewModel();
         const data = vm.getData();
-        const { sourceText, delimiter, useFirstRowAsHeader } = data;
+        const { sourceText, delimiter, useFirstRowAsHeader, isTransposed } = data;
 
         if (!sourceText) {
             return;
         }
-        const source = sourceText;
+
+        // 状態を反転
+        const newIsTransposed = !isTransposed;
+        vm.set('isTransposed', newIsTransposed);
+
         try {
             // 入力テキストを行に分割
-            const rows = source.split(/\r?\n/).filter(row => row.trim() !== '');
+            const rows = sourceText.split(/\r?\n/).filter(row => row.trim() !== '');
 
             if (rows.length === 0) {
                 vm.set('resultText', '');
@@ -79,26 +61,36 @@ Ext.define('Page.TransposePageController', {
             // 最大列数を取得
             const maxCols = Math.max(...matrix.map(row => row.length));
 
-            // 行と列を入れ替えた新しい2次元配列を作成
-            const transposed = [];
-            for (let i = 0; i < maxCols; i++) {
-                const newRow = [];
-                for (let j = 0; j < matrix.length; j++) {
-                    // 元の行にその列が存在しない場合は空文字を追加
-                    newRow.push(matrix[j][i] || '');
+            let result = matrix;
+            if (newIsTransposed) {
+                // 行と列を入れ替えた新しい2次元配列を作成
+                const transposed = [];
+                for (let i = 0; i < maxCols; i++) {
+                    const newRow = [];
+                    for (let j = 0; j < matrix.length; j++) {
+                        // 元の行にその列が存在しない場合は空文字を追加
+                        newRow.push(matrix[j][i] || '');
+                    }
+                    transposed.push(newRow);
                 }
-                transposed.push(newRow);
-            }
+                result = transposed;
 
-            // ヘッダー処理
-            if (useFirstRowAsHeader && matrix.length > 1) {
-                // 先頭行をヘッダーとして扱う（何もしない、すでに列の先頭に移動している）
+                // ヘッダー処理
+                if (useFirstRowAsHeader && matrix.length > 1) {
+                    // 先頭行をヘッダーとして扱う（何もしない、すでに列の先頭に移動している）
+                }
             }
 
             // 結果の2次元配列を文字列に戻す
-            const resultText = transposed.map(row => row.join(delimiter)).join('\n');
+            const resultText = result.map(row => row.join(delimiter)).join('\n');
 
             vm.set('resultText', resultText);
+
+            // ボタンのテキストを更新
+            const button = me.getView().down('button[handler=transpose]');
+            if (button) {
+                button.setText(`転置${newIsTransposed ? ' (ON)' : ' (OFF)'}`);
+            }
         } catch (e) {
             console.error('転置処理でエラーが発生しました', e);
             vm.set('resultText', `エラー: ${e.message}`);
@@ -228,11 +220,15 @@ Ext.define('Page.TransposePageController', {
         const me = this;
         const vm = me.getViewModel();
         const data = vm.getData();
-        const { sourceText, delimiter, useFirstRowAsHeader } = data;
+        const { sourceText, delimiter, useFirstRowAsHeader, isFlippedHorizontal } = data;
 
         if (!sourceText) {
             return;
         }
+
+        // 状態を反転
+        const newIsFlippedHorizontal = !isFlippedHorizontal;
+        vm.set('isFlippedHorizontal', newIsFlippedHorizontal);
 
         try {
             // 入力テキストを行に分割
@@ -246,13 +242,22 @@ Ext.define('Page.TransposePageController', {
             // 各行をデリミタで分割して2次元配列にする
             const matrix = rows.map(row => row.split(delimiter));
 
-            // 各行を反転
-            const flipped = matrix.map(row => [...row].reverse());
+            let result = matrix;
+            if (newIsFlippedHorizontal) {
+                // 各行を反転
+                result = matrix.map(row => [...row].reverse());
+            }
 
             // 結果の2次元配列を文字列に戻す
-            const resultText = flipped.map(row => row.join(delimiter)).join('\n');
+            const resultText = result.map(row => row.join(delimiter)).join('\n');
 
             vm.set('resultText', resultText);
+
+            // ボタンのテキストを更新
+            const button = me.getView().down('button[handler=flipHorizontal]');
+            if (button) {
+                button.setText(`左右反転${newIsFlippedHorizontal ? ' (ON)' : ' (OFF)'}`);
+            }
         } catch (e) {
             console.error('左右反転処理でエラーが発生しました', e);
             vm.set('resultText', `エラー: ${e.message}`);
@@ -266,11 +271,15 @@ Ext.define('Page.TransposePageController', {
         const me = this;
         const vm = me.getViewModel();
         const data = vm.getData();
-        const { sourceText, delimiter, useFirstRowAsHeader } = data;
+        const { sourceText, delimiter, useFirstRowAsHeader, isFlippedVertical } = data;
 
         if (!sourceText) {
             return;
         }
+
+        // 状態を反転
+        const newIsFlippedVertical = !isFlippedVertical;
+        vm.set('isFlippedVertical', newIsFlippedVertical);
 
         try {
             // 入力テキストを行に分割
@@ -284,53 +293,101 @@ Ext.define('Page.TransposePageController', {
             // 各行をデリミタで分割して2次元配列にする
             const matrix = rows.map(row => row.split(delimiter));
 
-            // 行を逆順にする
-            const flipped = [...matrix].reverse();
+            let result = matrix;
+            if (newIsFlippedVertical) {
+                // 行を逆順にする
+                result = [...matrix].reverse();
+            }
 
             // 結果の2次元配列を文字列に戻す
-            const resultText = flipped.map(row => row.join(delimiter)).join('\n');
+            const resultText = result.map(row => row.join(delimiter)).join('\n');
 
             vm.set('resultText', resultText);
+
+            // ボタンのテキストを更新
+            const button = me.getView().down('button[handler=flipVertical]');
+            if (button) {
+                button.setText(`上下反転${newIsFlippedVertical ? ' (ON)' : ' (OFF)'}`);
+            }
         } catch (e) {
             console.error('上下反転処理でエラーが発生しました', e);
             vm.set('resultText', `エラー: ${e.message}`);
         }
     },
 
-    // /**
-    //  * 入力テキストが変更されたときのハンドラ
-    //  */
-    // onSourceTextChange(field, newValue) {
-    //     const me = this;
-    //     me.delay( 100, () => {
-    //         me.transpose();
-    //     });
-    // },
+    /**
+     * 回転回数が変更されたときのハンドラ
+     */
+    onRotationCountChange(count) {
+        const me = this;
+        const view = me.getView();
+        const rightBtn = view.down('button[handler=rotateRight]');
+        const leftBtn = view.down('button[handler=rotateLeft]');
 
-    // /**
-    //  * デリミタが変更されたときのハンドラ
-    //  */
-    // onDelimiterChange(field, newValue) {
-    //     const me = this;
-    //     me.delay( 100, () => {
-    //         me.transpose();
-    //     });
-    // },
+        // 回転回数を0-3に正規化
+        const normalizedCount = ((count % 4) + 4) % 4;
 
-    // /**
-    //  * ヘッダー設定が変更されたときのハンドラ
-    //  */
-    // onHeaderCheckChange(field, newValue) {
-    //     const me = this;
-    //     me.delay( 100, () => {
-    //         me.transpose();
-    //     });
-    // },
+        if (rightBtn) {
+            rightBtn.setText(`右回転 (${normalizedCount})`);
+        }
+        if (leftBtn) {
+            leftBtn.setText(`左回転 (${((-normalizedCount % 4) + 4) % 4})`);
+        }
+    },
+
+    /**
+     * 入力テキストが変更されたときのハンドラ
+     */
+    onSourceTextChange(field, newValue) {
+        const me = this;
+        me.delay(100, () => {
+            const vm = me.getViewModel();
+            const { isTransposed, isFlippedVertical, isFlippedHorizontal } = vm.getData();
+
+            // 現在の状態に応じて適切な処理を実行
+            if (isTransposed) me.transpose();
+            if (isFlippedVertical) me.flipVertical();
+            if (isFlippedHorizontal) me.flipHorizontal();
+        });
+    },
+
+    /**
+     * デリミタが変更されたときのハンドラ
+     */
+    onDelimiterChange(field, newValue) {
+        const me = this;
+        me.delay(100, () => {
+            const vm = me.getViewModel();
+            const { isTransposed, isFlippedVertical, isFlippedHorizontal } = vm.getData();
+
+            // 現在の状態に応じて適切な処理を実行
+            if (isTransposed) me.transpose();
+            if (isFlippedVertical) me.flipVertical();
+            if (isFlippedHorizontal) me.flipHorizontal();
+        });
+    },
+
+    /**
+     * ヘッダー設定が変更されたときのハンドラ
+     */
+    onHeaderCheckChange(field, newValue) {
+        const me = this;
+        me.delay(100, () => {
+            const vm = me.getViewModel();
+            const { isTransposed, isFlippedVertical, isFlippedHorizontal } = vm.getData();
+
+            // 現在の状態に応じて適切な処理を実行
+            if (isTransposed) me.transpose();
+            if (isFlippedVertical) me.flipVertical();
+            if (isFlippedHorizontal) me.flipHorizontal();
+        });
+    },
 
     /**
      * 結果をクリップボードにコピーする
+     * モダンなNavigator Clipboard APIを使用し、フォールバックとしてLegacy APIを使用
      */
-    copyToClipboard() {
+    async copyToClipboard() {
         const me = this;
         const resultText = me.getViewModel().get('resultText');
 
@@ -338,15 +395,39 @@ Ext.define('Page.TransposePageController', {
             return;
         }
 
-        // テキストエリアを作成して選択、コピー
-        const textarea = document.createElement('textarea');
-        textarea.value = resultText;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
+        try {
+            // モダンなClipboard APIを使用
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(resultText);
+                Ext.toast('クリップボードにコピーしました');
+                return;
+            }
 
-        Ext.toast('クリップボードにコピーしました');
+            // フォールバック: Legacy API
+            const textarea = document.createElement('textarea');
+            textarea.value = resultText;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            const success = document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            if (success) {
+                Ext.toast('クリップボードにコピーしました');
+            } else {
+                throw new Error('コピーに失敗しました');
+            }
+        } catch (error) {
+            console.error('クリップボードへのコピーに失敗しました:', error);
+            Ext.toast({
+                html: 'クリップボードへのコピーに失敗しました',
+                iconCls: 'x-fa fa-exclamation-circle',
+                align: 't',
+                minWidth: 200
+            });
+        }
     }
 });
 
@@ -434,6 +515,8 @@ Ext.define('Pages.TransposePage', {
                 ],
                 items: {
                     xtype: 'monaco',
+                    tabSize: 4,
+                    userSoftTab: false,
                     bind: {
                         value: '{sourceText}'
                     }

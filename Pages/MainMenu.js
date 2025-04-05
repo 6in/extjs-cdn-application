@@ -90,6 +90,13 @@ Ext.define('Pages.MainMenuViewModel', {
                                 leaf: true
                             },
                             {
+                                name: '転置さん',
+                                page: 'Pages.TransposePage',
+                                description: 'テキストの縦横転置を行います',
+                                iconCls: 'fa fa-scroll',
+                                leaf: true
+                            },
+                            {
                                 name: 'かたカナさん',
                                 page: 'Pages.KataKanaConvert',
                                 description: '半角全角かな変換',
