@@ -16,3 +16,7 @@ root:
         leaf: true
         page: Pages.Sample
         description: 'Monacoエディタのサンプル'
+      - name: 回転さん
+        leaf: true
+        page: Pages.RotatePage
+        description: 'テキストの行列を右回転・左回転'
