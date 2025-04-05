@@ -76,6 +76,104 @@ Ext.define('Page.TransposePageController', {
     },
 
     /**
+     * テキストを右に90度回転する（時計回り）
+     */
+    rotateRight() {
+        const me = this;
+        const vm = me.getViewModel();
+        const data = vm.getData();
+        const { sourceText, delimiter, useFirstRowAsHeader } = data;
+
+        if (!sourceText) {
+            return;
+        }
+
+        try {
+            // 入力テキストを行に分割
+            const rows = sourceText.split(/\r?\n/).filter(row => row.trim() !== '');
+
+            if (rows.length === 0) {
+                vm.set('resultText', '');
+                return;
+            }
+
+            // 各行をデリミタで分割して2次元配列にする
+            const matrix = rows.map(row => row.split(delimiter));
+
+            // 最大列数を取得
+            const maxCols = Math.max(...matrix.map(row => row.length));
+
+            // 行列を右90度回転
+            const rotated = [];
+            for (let i = 0; i < maxCols; i++) {
+                const newRow = [];
+                for (let j = matrix.length - 1; j >= 0; j--) {
+                    // 元の行にその列が存在しない場合は空文字を追加
+                    newRow.push(matrix[j][i] || '');
+                }
+                rotated.push(newRow);
+            }
+
+            // 結果の2次元配列を文字列に戻す
+            const resultText = rotated.map(row => row.join(delimiter)).join('\n');
+
+            vm.set('resultText', resultText);
+        } catch (e) {
+            console.error('右回転処理でエラーが発生しました', e);
+            vm.set('resultText', `エラー: ${e.message}`);
+        }
+    },
+
+    /**
+     * テキストを左に90度回転する（反時計回り）
+     */
+    rotateLeft() {
+        const me = this;
+        const vm = me.getViewModel();
+        const data = vm.getData();
+        const { sourceText, delimiter, useFirstRowAsHeader } = data;
+
+        if (!sourceText) {
+            return;
+        }
+
+        try {
+            // 入力テキストを行に分割
+            const rows = sourceText.split(/\r?\n/).filter(row => row.trim() !== '');
+
+            if (rows.length === 0) {
+                vm.set('resultText', '');
+                return;
+            }
+
+            // 各行をデリミタで分割して2次元配列にする
+            const matrix = rows.map(row => row.split(delimiter));
+
+            // 最大列数を取得
+            const maxCols = Math.max(...matrix.map(row => row.length));
+
+            // 行列を左90度回転
+            const rotated = [];
+            for (let i = maxCols - 1; i >= 0; i--) {
+                const newRow = [];
+                for (let j = 0; j < matrix.length; j++) {
+                    // 元の行にその列が存在しない場合は空文字を追加
+                    newRow.push(matrix[j][i] || '');
+                }
+                rotated.push(newRow);
+            }
+
+            // 結果の2次元配列を文字列に戻す
+            const resultText = rotated.map(row => row.join(delimiter)).join('\n');
+
+            vm.set('resultText', resultText);
+        } catch (e) {
+            console.error('左回転処理でエラーが発生しました', e);
+            vm.set('resultText', `エラー: ${e.message}`);
+        }
+    },
+
+    /**
      * 入力テキストが変更されたときのハンドラ
      */
     onSourceTextChange(field, newValue) {
@@ -153,7 +251,6 @@ Ext.define('Pages.TransposePage', {
             {
                 xtype: 'textfield',
                 fieldLabel: 'デリミタ',
-                // value: '\t',
                 width: 150,
                 listeners: {
                     change: 'onDelimiterChange'
@@ -164,7 +261,6 @@ Ext.define('Pages.TransposePage', {
             }, {
                 xtype: 'checkbox',
                 boxLabel: '先頭行をヘッダーとして扱う',
-                // checked: true,
                 bind: {
                     value: '{useFirstRowAsHeader}'
                 },
@@ -174,6 +270,16 @@ Ext.define('Pages.TransposePage', {
                 listeners: {
                     change: 'onHeaderCheckChange'
                 }
+            }, '->', {
+                text: '右回転',
+                iconCls: 'fa fa-rotate-right',
+                handler: 'rotateRight',
+                tooltip: '時計回りに90度回転'
+            }, {
+                text: '左回転',
+                iconCls: 'fa fa-rotate-left',
+                handler: 'rotateLeft',
+                tooltip: '反時計回りに90度回転'
             }],
 
         items: [{
