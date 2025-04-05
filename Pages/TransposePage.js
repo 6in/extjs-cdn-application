@@ -97,10 +97,10 @@ Ext.define('Page.TransposePageController', {
         }
     },
 
-    /**
-     * テキストを右に90度回転する（時計回り）
+    /** 
+     * テキストを反時計回り
      */
-    rotateRight() {
+    rotateLeft() {
         const me = this;
         const vm = me.getViewModel();
         const data = vm.getData();
@@ -111,7 +111,7 @@ Ext.define('Page.TransposePageController', {
         }
 
         try {
-            // 回転回数を更新（時計回り = +1）
+            // 回転回数を更新（反時計回り = +1）
             const newRotationCount = rotationCount + 1;
             vm.set('rotationCount', newRotationCount);
 
@@ -156,9 +156,9 @@ Ext.define('Page.TransposePageController', {
     },
 
     /**
-     * テキストを左に90度回転する（反時計回り）
+     * テキストを時計回り
      */
-    rotateLeft() {
+    rotateRight() {
         const me = this;
         const vm = me.getViewModel();
         const data = vm.getData();
@@ -169,7 +169,7 @@ Ext.define('Page.TransposePageController', {
         }
 
         try {
-            // 回転回数を更新（反時計回り = -1）
+            // 回転回数を更新（時計回り = -1）
             const newRotationCount = rotationCount - 1;
             vm.set('rotationCount', newRotationCount);
 
@@ -516,6 +516,9 @@ Ext.define('Pages.TransposePage', {
                 items: {
                     xtype: 'monaco',
                     tabSize: 4,
+                    options: {
+                        insertSpaces: false,
+                    },
                     userSoftTab: false,
                     bind: {
                         value: '{sourceText}'
@@ -536,6 +539,10 @@ Ext.define('Pages.TransposePage', {
                 items: {
                     xtype: 'monaco',
                     readOnly: true,
+                    tabSize: 4,
+                    options: {
+                        insertSpaces: false,
+                    },
                     bind: {
                         value: '{resultText}'
                     }
