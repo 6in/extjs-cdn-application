@@ -8,7 +8,7 @@ Ext.define("RegexpUtil", {
                     error: ""
                 };
             }
-            keyword = keyword.replace(/\?<\w+>/g, "");
+            // keyword = keyword.replace(/\?<\w+>/g, "");
             lines = keyword.split("\n");
             reMacro = /^#def\s+(\S+)\s+(.+)$/;
             reComnt = /^#.+$/;
@@ -127,7 +127,7 @@ Ext.define('Page.RegExpCheckerController', {
         me.lastDecorations = []
         vm = me.getViewModel()
         vm.setData({
-            regexpText: '#def abc ABC\n#def def DEF\n#def ~ \\s+\n\n(abc | def)',
+            regexpText: '#def abc (?<key1>ABC)\n#def def (?<key2>DEF)\n#def ~ \\s+\n\n(abc | def)',
             targetText: 'ABCDEF\nDEF\n'
         })
         vm.getStore('savedRegexp').load();
@@ -162,33 +162,57 @@ Ext.define('Page.RegExpCheckerController', {
         }
 
         // URLを変更
-        const regexpUrl = `${data.regexpUrlBase}/?p=${new Date().getTime()}#!embed=true&flags=&re=${encodeURI(parseResult.keyword)}`
+        const regexpUrl = `${data.regexpUrlBase}/?p=${new Date().getTime()}#!embed=true&flags=&re=${encodeURI(parseResult.keyword.replace(/\?<\w+>/g, ""))}`
+        // パターンコンパイル
+        pattern = new RegExp(parseResult.keyword);
+        const patternNames = /\?<(\w+)>/gm
+        patternGroups = Array.from(new Set(Array.from(parseResult.keyword.matchAll(patternNames)).flatMap((item) => {
+            if (item.length >=2 ) {
+                return [item[1]]
+            } else {
+                return []
+            }
+        })))
+        console.log(patternGroups)
 
         // １行ずつ正規表現であてて、マーカーを設定
         const matchGroups = [];
-        const row = ['LINE_NO'];
+        const head = ['LINE_NO'];
         for (let i = 0; i < 10; i++) {
-            row.push(`GROUP_${i + 1}`)
+            head.push(`GROUP_${i + 1}`)
         }
-        matchGroups.push(row);
+        head.push(...patternGroups)
+
+        matchGroups.push(head);
         const lines = data.targetText.split(/\r?\n/);
-        // パターンコンパイル
-        pattern = new RegExp(parseResult.keyword);
         const deltaDecorations = []
         lines.forEach((line, lineNo) => {
             if (line.trim() == '') {
                 return;
             }
-            const matchGroup = [lineNo + 1];
-
+            const matchGroup = head.map((item) => {
+                return ''
+            });
+            matchGroup[0] = lineNo + 1;
             const regArray = pattern.exec(line)
             if (regArray != null) {
                 for ( let i = 0 ; i < regArray.length ; i++) {
-                    matchGroup.push(regArray[i])
+                    matchGroup[i+1] = regArray[i]
+                }
+                if (regArray.groups) {
+                    for (const key in regArray.groups) {
+                        const index = head.indexOf(key);
+                        if (index >= 0) {
+                            if (regArray.groups[key]) {
+                                matchGroup[index] = regArray.groups[key];
+                            }
+                        }
+                    }
                 }
                 if (matchGroup.length > 1) {
                     matchGroups.push(matchGroup);
                 }
+
             }
             let maxLoop = 100;
             let lineWork = line
