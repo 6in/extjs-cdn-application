@@ -778,6 +778,44 @@ Ext.define("TranslateUtil", {
                 return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
             });
         },
+        /**
+         * 全角・半角アルファベットの大文字・小文字変換
+         * @param {string} str
+         * @param {"upper"|"lower"} mode
+         * @returns {string}
+         */
+        toAlphaCase(str, mode) {
+            // 半角英字は半角のまま、全角英字は全角のまま変換
+            return str.replace(/[A-Za-zＡ-Ｚａ-ｚ]/g, function (ch) {
+                // 半角英字
+                if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {
+                    if (mode === "upper") {
+                        return ch.toUpperCase();
+                    } else {
+                        return ch.toLowerCase();
+                    }
+                }
+                // 全角英字
+                const code = ch.charCodeAt(0);
+                // Ａ(0xFF21)～Ｚ(0xFF3A), ａ(0xFF41)～ｚ(0xFF5A)
+                if ((code >= 0xFF21 && code <= 0xFF3A) || (code >= 0xFF41 && code <= 0xFF5A)) {
+                    if (mode === "upper") {
+                        // 小文字→大文字
+                        if (code >= 0xFF41 && code <= 0xFF5A) {
+                            return String.fromCharCode(code - 0x20);
+                        }
+                        return ch;
+                    } else {
+                        // 大文字→小文字
+                        if (code >= 0xFF21 && code <= 0xFF3A) {
+                            return String.fromCharCode(code + 0x20);
+                        }
+                        return ch;
+                    }
+                }
+                return ch;
+            });
+        },
         zenkana2Hankana(str) {
             var kanaMap = {
                 "ガ": "ｶﾞ", "ギ": "ｷﾞ", "グ": "ｸﾞ", "ゲ": "ｹﾞ", "ゴ": "ｺﾞ",

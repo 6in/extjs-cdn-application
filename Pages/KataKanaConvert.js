@@ -99,6 +99,12 @@ Ext.define('Page.KataKanaConvertMainViewController', {
         case "zenKatakana":
             lines = TranslateUtil.hiraToKana(lines)
             break;
+        case "toUpperAlpha":
+            lines = TranslateUtil.toAlphaCase(lines, "upper")
+            break;
+        case "toLowerAlpha":
+            lines = TranslateUtil.toAlphaCase(lines, "lower")
+            break;
         }
 
         vm.setData({
@@ -172,6 +178,12 @@ Ext.define('Pages.KataKanaConvert.MainView', {
                         }, {
                             text: '全角カタカナ',
                             value: 'zenKatakana'
+                        }, {
+                            text: '英字大文字',
+                            value: 'toUpperAlpha'
+                        }, {
+                            text: '英字小文字',
+                            value: 'toLowerAlpha'
                         }
                     ],
                     listeners: {
